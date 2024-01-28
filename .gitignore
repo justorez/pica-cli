@@ -1,3 +1,7 @@
+comics/
+tmp/
+test/1.ts
+
 # Logs
 logs
 *.log

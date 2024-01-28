@@ -1,0 +1,37 @@
+{
+  "name": "pica-dl",
+  "author": "justorez",
+  "version": "1.0.0",
+  "description": "哔咔漫画下载器",
+  "packageManager": "pnpm@8.14.3",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "devDependencies": {
+    "@inquirer/prompts": "^3.3.2",
+    "@types/debug": "^4.1.12",
+    "@types/node": "^20.11.7",
+    "@types/progress": "^2.0.7",
+    "@types/tough-cookie": "^4.0.5",
+    "@vitest/ui": "^1.2.2",
+    "axios": "^1.6.7",
+    "axios-cookiejar-support": "^5.0.0",
+    "debug": "^4.3.4",
+    "dotenv": "^16.4.1",
+    "enquirer": "^2.4.1",
+    "ora": "^8.0.1",
+    "p-limit": "^5.0.0",
+    "picocolors": "^1.0.0",
+    "progress": "^2.0.3",
+    "tough-cookie": "^4.1.3",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
+  }
+}
