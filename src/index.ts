@@ -1,5 +1,5 @@
 import { Pica } from './sdk'
-import { filterPictures, loadEnv } from './utils'
+import { filterEpisodes, filterPictures, loadEnv, mark } from './utils'
 import ora from 'ora'
 import { select, checkbox, input } from '@inquirer/prompts'
 import ProgressBar from 'progress'
@@ -10,85 +10,102 @@ import pico from 'picocolors'
 loadEnv()
 
 async function main() {
-    const answer = await select({
-        message: '想下载哪些漫画？',
-        choices: [
-            { name: '排行榜', value: 'leaderboard' },
-            { name: '收藏夹', value: 'favorites' },
-            { name: '自己搜索', value: 'search' }
-        ]
-    })
+    const answer =
+        process.env.PICA_DL_CONTENT ||
+        (await select({
+            message: '想下载哪些漫画？',
+            choices: [
+                { name: '排行榜', value: 'leaderboard' },
+                { name: '收藏夹', value: 'favorites' },
+                { name: '去搜索', value: 'search' }
+            ]
+        }))
 
     const spinner = ora('正在登录哔咔').start()
     const pica = new Pica()
     await pica.login()
     spinner.stop()
 
-    const comicIds = []
+    const comics: Comic[] = []
     if (answer === 'leaderboard') {
         const res = await pica.leaderboard()
-        comicIds.push(...res.map((x) => x._id))
+        comics.push(...res)
     }
 
     if (answer === 'favorites') {
         const res = await pica.favorites()
-        comicIds.push(...res.map((x) => x._id))
+        comics.push(...res)
     }
 
     let searchRes: Comic[] = []
     if (answer === 'search') {
-        const keyword = await input({
-            message: '请输入关键字'
-        })
+        const keywords =
+            process.env.PICA_DL_SEARCH_KEYWORDS ||
+            (await input({
+                message: '请输入关键字'
+            }))
 
-        spinner.start('正在搜索结果')
-        searchRes = await pica.searchAll(keyword)
-        spinner.stop()
+        for (const keyword of keywords.split('#')) {
+            spinner.start(`正在搜索 ${keyword}`)
+            searchRes = await pica.searchAll(keyword)
+            spinner.stop()
 
-        const selected = await checkbox({
-            message: '请选择要下载的漫画',
-            pageSize: 8,
-            choices: searchRes.map((x) => {
-                return {
-                    name: x.title,
-                    value: x._id
-                }
-            })
-        })
-        comicIds.push(...selected)
+            const selected = process.env.PICA_DL_SEARCH_KEYWORDS
+                ? searchRes
+                : await checkbox({
+                      message: '请选择要下载的漫画',
+                      pageSize: 8,
+                      choices: searchRes.map((x) => {
+                          return {
+                              name: x.title,
+                              value: x
+                          }
+                      })
+                  })
+            comics.push(...selected)
+        }
     }
 
-    for (const cid of comicIds) {
-        const title = searchRes.find((x) => x._id === cid)?.title || '' // 漫画标题
+    for (const comic of comics) {
+        const title = comic.title
+        const cid = comic._id
 
         spinner.start('正在获取章节信息')
-        const episodes = await pica.episodesAll(cid)
+        let episodes = await pica.episodesAll(cid)
+        episodes = filterEpisodes(episodes, cid)
         spinner.stop()
 
         for (const ep of episodes) {
             spinner.start(`正在获取章节${ep.title}的图片信息`)
-            const list = await pica.picturesAll(cid, ep.id, ep.title)
-            const pictures = filterPictures(title, list)
+            let pictures = await pica.picturesAll(cid, ep)
+            pictures = filterPictures(pictures, title, ep.title)
             spinner.stop()
 
-            const bar = new ProgressBar(`正在下载 ${title}-${ep.title} [:bar] :current/:total`, {
-                incomplete: ' ',
-                width: 20,
-                total: pictures.length
-            })
+            const bar = new ProgressBar(
+                `➡️ ${title}-${ep.title} [:bar] :current/:total`,
+                {
+                    incomplete: ' ',
+                    width: 20,
+                    total: pictures.length
+                }
+            )
 
             const concurrency = Number(process.env.PICA_DL_CONCURRENCY || 5)
             const limit = pLimit(concurrency)
             const tasks = pictures.map((pic) => {
                 return limit(() => {
-                    return pica.download(pic.url, {
-                        title: title,
-                        epTitle: pic.epTitle,
-                        picName: pic.name
-                    }).then(() => bar.tick(1))
+                    return pica
+                        .download(pic.url, {
+                            title: title,
+                            epTitle: pic.epTitle,
+                            picName: pic.name
+                        })
+                        .then(() => bar.tick())
                 })
             })
             await Promise.all(tasks)
+
+            mark(cid, ep.id)
         }
 
         console.log(pico.green(`✔ ${pico.bold(title)} 下载完成`))
