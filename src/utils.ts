@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import dotenv from 'dotenv'
 import fs from 'node:fs'
-import { MPicture } from './types'
+import { Episode, MPicture } from './types'
 import Debug from 'debug'
 
 export const debug = Debug('pica')
@@ -10,21 +10,38 @@ export const debug = Debug('pica')
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /**
- * 过滤掉已下载的漫画内容
- * @param title 漫画标题
+ * 标记某章节已下载完成，并记录到本地临时文件
  */
-export function filterPictures(title: string, pictures: MPicture[]) {
-    const dir = resolvePath('../comics', normalizeName(title))
-    if (!fs.existsSync(dir)) return pictures
+export function mark(bookId: string, epId: string) {
+    const dir = resolvePath('../comics')
+    fs.mkdirSync(dir, { recursive: true })
+    fs.appendFileSync(path.join(dir, 'done.txt'), `${bookId}/${epId}\n`, 'utf8')
+}
 
-    const downloaded: string[] = []
-    for (const epDir of fs.readdirSync(dir)) {
-        const files = fs.readdirSync(path.join(dir, epDir))
-        downloaded.push(...files.map(file => `${epDir}/${file}`))
+/**
+ * 过滤掉已下载的章节
+ */
+export function filterEpisodes(episodes: Episode[], bookId: string) {
+    const donePath = resolvePath('../comics/done.txt')
+    if (!fs.existsSync(donePath)) {
+        return episodes
     }
-    
-    debug('%O', downloaded)
-    return pictures.filter(pic => !downloaded.includes(`${pic.epTitle}/${pic.name}`))
+    const done = fs.readFileSync(donePath, 'utf8').split(/\n|\r\n/).filter(x => x)
+    return episodes.filter(ep => !done.includes(`${bookId}/${ep.id}`))
+}
+
+/**
+ * 过滤掉某章节下已下载的图片
+ * @param title 漫画标题
+ * @param epTitle 章节标题
+ */
+export function filterPictures(pictures: MPicture[], title: string, epTitle: string) {
+    const dir = resolvePath('../comics', normalizeName(title), normalizeName(epTitle))
+    if (!fs.existsSync(dir)) {
+        return pictures
+    }
+    const files = fs.readdirSync(dir)
+    return pictures.filter(pic => !files.includes(pic.name))
 }
 
 export function loadEnv() {
