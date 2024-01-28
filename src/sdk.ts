@@ -12,7 +12,6 @@ import {
     DInfo,
     Picture,
     PicturePage,
-    MPicture,
     SearchPage
 } from './types'
 
@@ -159,8 +158,8 @@ export class Pica {
     /**
      * 获取章节下图片
      */
-    async pictures(bookId: string, epId: string, page = 1) {
-        const url = `comics/${bookId}/order/${epId}/pages?page=${page}`
+    async pictures(bookId: string, orderId: string | number, page = 1) {
+        const url = `comics/${bookId}/order/${orderId}/pages?page=${page}`
         const res = await this.request('get', url)
         res.pages.docs = res.pages.docs.map((doc: Picture) => {
             return {
@@ -176,17 +175,17 @@ export class Pica {
     /**
      * 获取章节下全部图片
      */
-    async picturesAll(bookId: string, epId: string, epTitle: string) {
-        const first = await this.pictures(bookId, epId)
+    async picturesAll(bookId: string, ep: Episode) {
+        const first = await this.pictures(bookId, ep.order)
         const pages = first.pages
         const pictures = first.docs
         for (let i = 2; i <= pages; i++) {
-            const res = await this.pictures(bookId, epId, i)
+            const res = await this.pictures(bookId, ep.order, i)
             pictures.push(...res.docs)
         }
         const len = String(pictures.length).length
         pictures.forEach((pic, i) => {
-            pic.epTitle = epTitle
+            pic.epTitle = ep.title
             pic.name = String(i+1).padStart(len, '0') + path.extname(pic.name)
         })
         return pictures
@@ -204,22 +203,6 @@ export class Pica {
         const file = path.resolve(dir, info.picName)
         return fs.writeFile(file, data as unknown as Buffer)
     }
-
-    /**
-     * 获取漫画的全部图片，包含章节信息
-     * 暂不可用，太耗时
-     */
-    // async comicPictures(bookId: string) {
-    //     const pictures: MPicture[] = []
-    //     const episodes = await this.episodesAll(bookId)
-    //     for (const ep of episodes) {
-    //         console.log(ep)
-    //         const res = await this.picturesAll(bookId, ep.id)
-    //         res.forEach(x => x.epTitle = normalizeName(ep.title))
-    //         pictures.push(...res)
-    //     }
-    //     return pictures
-    // }
 
     async search(keyword: string, page = 1, sort = this.Order.latest) {
         const url = `comics/advanced-search?page=${page}`

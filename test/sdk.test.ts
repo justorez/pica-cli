@@ -31,7 +31,6 @@ describe('测试哔咔相关 API', () => {
     })
 
     const bookId = '5ccb04083478850224b4da84'
-    const epId = '5ccb04083478850224b4da85'
 
     it('获取漫画全部章节', async () => {
         const res = await pica.episodesAll(bookId)
@@ -39,7 +38,10 @@ describe('测试哔咔相关 API', () => {
     })
 
     it('获取章节下的图片', async () => {
-        const res = await pica.picturesAll(bookId, epId, 'Ch.1')
-        fs.writeFileSync(p('picturesAll.json'), JSON.stringify(res), 'utf8')
+        const episodes = await pica.episodesAll(bookId)
+        for (const ep of episodes.slice(0, 2)) {
+            const res = await pica.picturesAll(bookId, ep)
+            fs.writeFileSync(p(`picturesAll.${ep.order}.json`), JSON.stringify(res), 'utf8')
+        }
     })
 })
