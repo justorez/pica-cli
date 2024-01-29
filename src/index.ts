@@ -76,7 +76,7 @@ async function main() {
         episodes = filterEpisodes(episodes, cid)
         spinner.stop()
 
-        console.log(`${picos.cyan('➡️')} 查询到 ${episodes.length} 个章节`)
+        console.log(`${picos.cyan('➡️')} ${title} 查询到 ${episodes.length} 个章节`)
 
         for (const ep of episodes) {
             spinner.start(`正在获取章节 ${ep.title} 的图片信息`)
@@ -87,7 +87,6 @@ async function main() {
             const bar = new ProgressBar(
                 `${picos.cyan('➡️')} ${title} ${ep.title} [:bar] :current/:total`,
                 {
-                    complete: '⬜',
                     incomplete: ' ',
                     width: 20,
                     total: pictures.length
@@ -118,8 +117,7 @@ async function main() {
 }
 
 process.on('uncaughtException', (err) => {
-    // console.error(err.message)
-    // console.log(process.env.PICA_PROXY)
+    console.error(err.message)
     process.exit(0)
 })
 

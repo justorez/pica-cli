@@ -10,7 +10,7 @@ export const debug = Debug('pica')
  * 标记某章节已下载完成，并记录到本地临时文件
  */
 export function mark(bookId: string, epId: string) {
-    const dir = resolvePath('../comics')
+    const dir = resolvePath('comics')
     fs.mkdirSync(dir, { recursive: true })
     fs.appendFileSync(path.join(dir, 'done.txt'), `${bookId}/${epId}\n`, 'utf8')
 }

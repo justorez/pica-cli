@@ -38,7 +38,6 @@ export class Pica {
                 baseURL: 'https://picaapi.picacomic.com/',
                 // baseURL: 'https://api.manhuapica.com/',
                 jar,
-                timeout: 10000,
                 proxy: httpProxy
                     ? {
                           protocol: httpProxy.protocol,

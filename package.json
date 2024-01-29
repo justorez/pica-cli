@@ -2,7 +2,7 @@
   "name": "pica-dl",
   "author": "justorez",
   "version": "0.0.1",
-  "description": "哔咔漫画下载器",
+  "description": "😉 哔咔漫画下载器",
   "packageManager": "pnpm@8.14.3",
   "type": "module",
   "bin": {
