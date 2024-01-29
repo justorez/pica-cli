@@ -112,7 +112,7 @@ async function main() {
             mark(cid, ep.id)
         }
 
-        console.log(picos.green(`${picos.green('✓')} ${picos.bold(title)} 下载完成`))
+        console.log(picos.green(`✓ ${picos.bold(title)} 下载完成`))
     }
 }
 

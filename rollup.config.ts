@@ -1,16 +1,45 @@
 import { defineConfig } from 'rollup'
-import typescript from '@rollup/plugin-typescript'
-import terser from '@rollup/plugin-terser'
 import json from '@rollup/plugin-json'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import esbuild from 'rollup-plugin-esbuild'
+import { builtinModules } from 'node:module'
+import { readFileSync } from 'node:fs'
+import { visualizer } from 'rollup-plugin-visualizer'
+
+const pkg = JSON.parse(
+    readFileSync(new URL('./package.json', import.meta.url), 'utf8')
+)
 
 export default defineConfig({
-    input: 'src/index.ts',
-    plugins: [
-        typescript(),
-        json(),
-        terser()
+    input: {
+        index: 'src/index.ts',
+        zip: 'src/zip.ts'
+    },
+    output: {
+        dir: 'dist',
+        entryFileNames: '[name].js',
+        format: 'es'
+    },
+    external: [
+        ...Object.keys(pkg.dependencies),
+        ...builtinModules,
+        /node:/
     ],
-    output: [
-        { file: 'dist/index.js', format: 'es' }
+    plugins: [
+        json(),
+        esbuild({
+            platform: 'node',
+            minify: true
+        }),
+        nodeResolve({
+            preferBuiltins: false,
+            // 为什么设置之后就报错？
+            // [!] (plugin commonjs--resolver) 
+            // TypeError: The "path" argument must be of type string or an instance of URL. Received null
+            // exportConditions: ['node']
+        }),
+        commonjs(),
+        visualizer()
     ]
 })

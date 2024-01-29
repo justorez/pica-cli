@@ -1,5 +1,7 @@
 # pica-cli
 
+![NPM Version](https://img.shields.io/npm/v/pica-cli)
+
 😉 哔咔漫画下载器
 
 ![演示](https://s2.loli.net/2024/01/29/rhcOo4GBD8kLEqv.gif)
@@ -10,6 +12,7 @@
 - 关键词搜索：支持多选
 - 自动过滤已下载的章节和图片，不会重复下载
 - 如果没有相关环境变量，则启动交互命令行；若有则直接执行
+- 支持分章节批量压缩，可配合支持 zip 包的漫画阅读软件使用，比如 Perfect Viewer
 
 ## 用法
 
@@ -64,7 +67,6 @@ pnpm dev
 ## TODO
 
 - [ ] 使用 github action 下载
-- [ ] 将漫画批量打成压缩包
 
 ## 其他
 
