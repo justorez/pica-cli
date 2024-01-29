@@ -1,4 +1,3 @@
-import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import dotenv from 'dotenv'
 import fs from 'node:fs'
@@ -6,8 +5,6 @@ import { Episode, MPicture } from './types'
 import Debug from 'debug'
 
 export const debug = Debug('pica')
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /**
  * 标记某章节已下载完成，并记录到本地临时文件
@@ -22,7 +19,7 @@ export function mark(bookId: string, epId: string) {
  * 过滤掉已下载的章节
  */
 export function filterEpisodes(episodes: Episode[], bookId: string) {
-    const donePath = resolvePath('../comics/done.txt')
+    const donePath = resolvePath('comics/done.txt')
     if (!fs.existsSync(donePath)) {
         return episodes
     }
@@ -36,7 +33,7 @@ export function filterEpisodes(episodes: Episode[], bookId: string) {
  * @param epTitle 章节标题
  */
 export function filterPictures(pictures: MPicture[], title: string, epTitle: string) {
-    const dir = resolvePath('../comics', normalizeName(title), normalizeName(epTitle))
+    const dir = resolvePath('comics', normalizeName(title), normalizeName(epTitle))
     if (!fs.existsSync(dir)) {
         return pictures
     }
@@ -45,7 +42,7 @@ export function filterPictures(pictures: MPicture[], title: string, epTitle: str
 }
 
 export function loadEnv() {
-    const env = resolvePath('../.env.local')
+    const env = resolvePath('.env.local')
     if (fs.existsSync(env)) {
         dotenv.config({
             path: env
@@ -54,7 +51,7 @@ export function loadEnv() {
 }
 
 export function resolvePath(...args: string[]) {
-    return path.resolve(__dirname, ...args)
+    return path.resolve(process.cwd(), ...args)
 }
 
 /**
@@ -62,6 +59,7 @@ export function resolvePath(...args: string[]) {
  */
 export function normalizeName(s: string) {
     return s
+        .trim()
         .replace(/\//g, '／')
         .replace(/\\/g, '＼')
         .replace(/\?/g, '？')

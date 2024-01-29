@@ -1,20 +1,52 @@
 {
   "name": "pica-dl",
   "author": "justorez",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "哔咔漫画下载器",
   "packageManager": "pnpm@8.14.3",
   "type": "module",
+  "bin": {
+    "pica-dl": "dist/index.js"
+  },
   "scripts": {
     "dev": "tsx src/index.ts",
-    "build": "tsc",
+    "start": "pnpm build && node dist/index.js",
+    "build": "rimraf dist && rollup --config rollup.config.ts --configPlugin typescript",
     "test": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "pub": "pnpm build && pnpm publish"
   },
-  "keywords": [],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "resource"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "bugs": {
+    "url": "https://github.com/justorez/pica-dl/issues"
+  },
+  "homepage": "https://github.com/justorez/pica-dl",
+  "keywords": [
+    "pica",
+    "bika",
+    "cli",
+    "inquirer",
+    "download",
+    "哔咔",
+    "漫画"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@inquirer/prompts": "^3.3.2",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@types/debug": "^4.1.12",
     "@types/node": "^20.11.7",
     "@types/progress": "^2.0.7",
@@ -29,7 +61,10 @@
     "p-limit": "^5.0.0",
     "picocolors": "^1.0.0",
     "progress": "^2.0.3",
+    "rimraf": "^5.0.5",
+    "rollup": "^4.9.6",
     "tough-cookie": "^4.1.3",
+    "tslib": "^2.6.2",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vitest": "^1.2.2"

@@ -109,7 +109,7 @@ export class Pica {
             email: process.env.PICA_ACCOUNT,
             password: process.env.PICA_PASSWORD
         }).catch((err) => {
-            console.error(err)
+            console.error('\n', err)
             return Promise.reject(new Error('账号或密码错误'))
         })
         if (!res.token) {

@@ -5,7 +5,7 @@ import { select, checkbox, input } from '@inquirer/prompts'
 import ProgressBar from 'progress'
 import { Comic } from './types'
 import pLimit from 'p-limit'
-import pico from 'picocolors'
+import picos from 'picocolors'
 
 loadEnv()
 
@@ -54,10 +54,11 @@ async function main() {
                 ? searchRes
                 : await checkbox({
                       message: '请选择要下载的漫画',
-                      pageSize: 8,
+                      pageSize: 10,
+                      loop: false,
                       choices: searchRes.map((x) => {
                           return {
-                              name: x.title,
+                              name: x.title.trim(),
                               value: x
                           }
                       })
@@ -67,13 +68,15 @@ async function main() {
     }
 
     for (const comic of comics) {
-        const title = comic.title
+        const title = comic.title.trim()
         const cid = comic._id
 
         spinner.start('正在获取章节信息')
         let episodes = await pica.episodesAll(cid)
         episodes = filterEpisodes(episodes, cid)
         spinner.stop()
+
+        console.log(`${picos.cyan('➡️')} 查询到 ${episodes.length} 个章节`)
 
         for (const ep of episodes) {
             spinner.start(`正在获取章节 ${ep.title} 的图片信息`)
@@ -82,8 +85,9 @@ async function main() {
             spinner.stop()
 
             const bar = new ProgressBar(
-                `➡️ ${title}-${ep.title} [:bar] :current/:total`,
+                `${picos.cyan('➡️')} ${title} ${ep.title} [:bar] :current/:total`,
                 {
+                    complete: '⬜',
                     incomplete: ' ',
                     width: 20,
                     total: pictures.length
@@ -103,13 +107,25 @@ async function main() {
                         .then(() => bar.tick())
                 })
             })
+
             await Promise.all(tasks)
 
             mark(cid, ep.id)
         }
 
-        console.log(pico.green(`✔ ${pico.bold(title)} 下载完成`))
+        console.log(picos.green(`${picos.green('✓')} ${picos.bold(title)} 下载完成`))
     }
 }
+
+process.on('uncaughtException', (err) => {
+    // console.error(err.message)
+    // console.log(process.env.PICA_PROXY)
+    process.exit(0)
+})
+
+process.on('SIGINT', () => {
+    console.log('\n')
+    process.exit(0)
+})
 
 main()

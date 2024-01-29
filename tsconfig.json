@@ -9,20 +9,19 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "outDir": "dist/",
+    "sourceMap": false,
+    "declaration": false,
+    "resolveJsonModule": true,
     "types": [
       "node"
     ],
-    "declaration": true,
-    "resolveJsonModule": true,
-    "removeComments": true,
     "paths": {
       "@/*": ["./src/*"],
       "src/*": ["./src/*"]
     }
   },
   "include": [
-    "src/*.ts"
+    "src/*.ts",
+    "rollup.config.ts"
   ]
 }
