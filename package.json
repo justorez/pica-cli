@@ -1,12 +1,12 @@
 {
-  "name": "pica-dl",
+  "name": "pica-cli",
   "author": "justorez",
-  "version": "0.0.3",
+  "version": "0.0.1",
   "description": "😉 哔咔漫画下载器",
   "packageManager": "pnpm@8.14.3",
   "type": "module",
   "bin": {
-    "pica-dl": "dist/index.js"
+    "pica-cli": "dist/index.js"
   },
   "scripts": {
     "dev": "tsx src/index.ts",
@@ -27,9 +27,9 @@
     "node": ">=18"
   },
   "bugs": {
-    "url": "https://github.com/justorez/pica-dl/issues"
+    "url": "https://github.com/justorez/pica-cli/issues"
   },
-  "homepage": "https://github.com/justorez/pica-dl",
+  "homepage": "https://github.com/justorez/pica-cli",
   "keywords": [
     "pica",
     "bika",

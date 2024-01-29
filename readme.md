@@ -1,4 +1,4 @@
-# pica-dl
+# pica-cli
 
 😉 哔咔漫画下载器
 
@@ -16,7 +16,7 @@
 ### 方式一：直接安装
 
 ```bash
-pnpm add pica-dl -g
+pnpm add pica-cli -g
 ```
 
 参考 [.env.template](.env.template) 配置环境变量，如下所示：
@@ -42,13 +42,13 @@ PICA_DL_SEARCH_KEYWORDS=
 
 ```bash
 # 运行
-pica-dl
+pica-cli
 ```
 
 ### 方式二：本地运行源码
 
 ```bash
-git clone https://github.com/justorez/pica-dl.git
+git clone https://github.com/justorez/pica-cli.git
 ```
 
 拷贝一份 [.env.template](.env.template)，命名为 `.env.local`，配置好后就不用配置环境变量了。
