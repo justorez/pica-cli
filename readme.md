@@ -45,7 +45,7 @@ PICA_DL_SEARCH_KEYWORDS=
 pica-dl
 ```
 
-## 方式二：本地运行源码
+### 方式二：本地运行源码
 
 ```bash
 git clone https://github.com/justorez/pica-dl.git
@@ -63,8 +63,8 @@ pnpm dev
 
 ## TODO
 
-- [] 使用 github action 下载
-- [] 将漫画批量打成压缩包
+- [ ] 使用 github action 下载
+- [ ] 将漫画批量打成压缩包
 
 ## 其他
 
