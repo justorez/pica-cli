@@ -25,6 +25,8 @@ export class Pica {
     }
     api // 分页默认为每页 40 条
     token: string | undefined
+    maxRetry = 3
+    retryMap = new Map<string, number>() // <url, retryCount>
 
     constructor() {
         const jar = new CookieJar()
@@ -33,9 +35,10 @@ export class Pica {
             : false
         this.api = wrapper(
             axios.create({
-                jar,
                 baseURL: 'https://picaapi.picacomic.com/',
                 // baseURL: 'https://api.manhuapica.com/',
+                jar,
+                timeout: 10000,
                 proxy: httpProxy
                     ? {
                           protocol: httpProxy.protocol,
@@ -66,11 +69,17 @@ export class Pica {
         })
         this.api.interceptors.response.use(
             (res) => {
+                // 响应成功，从重试表中删除 url
+                const url = res.config.url
+                url && this.retryMap.delete(url)
+
                 const result = res.data
                 // debug('%s %O', res.config.url, result)
 
                 const responseType = res.config.responseType
-                if (responseType === 'arraybuffer') return result
+                if (responseType === 'arraybuffer') {
+                    return res
+                }
 
                 if (result.code != 200) {
                     throw new Error('请求失败')
@@ -78,8 +87,19 @@ export class Pica {
                 return result.data
             },
             (error: AxiosError) => {
-                debug('error %s %O', error.config?.url, error.message)
-                return Promise.reject(error.message)
+                const { config, message } = error
+                const url = config?.url || ''
+
+                const retryCount = this.retryMap.get(url) || 0
+                if (config && retryCount > 0) {
+                    this.retryMap.set(url, retryCount - 1)
+                    return this.api.request(config)
+                } else {
+                    this.retryMap.delete(url)
+                }
+
+                debug('error %s %O', url, message)
+                return Promise.reject(message)
             }
         )
     }
@@ -88,7 +108,10 @@ export class Pica {
         const res = await this.request('post', 'auth/sign-in', {
             email: process.env.PICA_ACCOUNT,
             password: process.env.PICA_PASSWORD
-        }).catch(() => Promise.reject(new Error('账号或密码错误')))
+        }).catch((err) => {
+            console.error(err)
+            return Promise.reject(new Error('账号或密码错误'))
+        })
         if (!res.token) {
             throw new Error('PICA_SECRET_KEY 错误')
         }
@@ -162,11 +185,13 @@ export class Pica {
         const url = `comics/${bookId}/order/${orderId}/pages?page=${page}`
         const res = await this.request('get', url)
         res.pages.docs = res.pages.docs.map((doc: Picture) => {
+            const fileServer =
+                process.env.PICA_FILE_SERVER || doc.media.fileServer
             return {
                 id: doc.id,
                 ...doc.media,
                 name: doc.media.originalName,
-                url: `${doc.media.fileServer}/static/${doc.media.path}`
+                url: `${fileServer}/static/${doc.media.path}`
             }
         })
         return res.pages as PicturePage
@@ -186,13 +211,35 @@ export class Pica {
         const len = String(pictures.length).length
         pictures.forEach((pic, i) => {
             pic.epTitle = ep.title
-            pic.name = String(i+1).padStart(len, '0') + path.extname(pic.name)
+            pic.name = String(i + 1).padStart(len, '0') + path.extname(pic.name)
         })
         return pictures
     }
 
-    async download(url: string, info: DInfo) {
-        const data = await this.api.get(url, { responseType: 'arraybuffer' })
+    async download(url: string, info: DInfo): Promise<void> {
+
+        // 使用单独的 axios 请求
+        // 哔咔的某些文件服务器安全证书不可用，我真服了！
+        // 把图片 https 全部换成 http
+        const transformUrl = (url: string) => {
+            const u = new URL(url)
+            return `http://${u.host}${u.pathname}`
+        }
+        url = transformUrl(url)
+
+        this.retryMap.set(url, this.maxRetry)
+        const res = await this.api.get<Buffer>(url, {
+            responseType: 'arraybuffer',
+            maxRedirects: 0,
+            validateStatus: (status) => (status >= 200 && status < 304)
+        })
+
+        // 由于 axio 的自动重定向过程无法修改，只好手动处理
+        if (res.headers['location']) {
+            const nextUrl = transformUrl(res.headers['location'])
+            return this.download(nextUrl, info)
+        }
+
         const dir = path.resolve(
             process.cwd(),
             'comics',
@@ -201,7 +248,7 @@ export class Pica {
         )
         await fs.mkdir(dir, { recursive: true })
         const file = path.resolve(dir, info.picName)
-        return fs.writeFile(file, data as unknown as Buffer)
+        return fs.writeFile(file, res.data)
     }
 
     async search(keyword: string, page = 1, sort = this.Order.latest) {

@@ -76,7 +76,7 @@ async function main() {
         spinner.stop()
 
         for (const ep of episodes) {
-            spinner.start(`正在获取章节${ep.title}的图片信息`)
+            spinner.start(`正在获取章节 ${ep.title} 的图片信息`)
             let pictures = await pica.picturesAll(cid, ep)
             pictures = filterPictures(pictures, title, ep.title)
             spinner.stop()
