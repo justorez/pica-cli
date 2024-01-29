@@ -2,7 +2,7 @@
 
 😉 哔咔漫画下载器
 
-![演示](./resource/1.gif)
+![演示](https://s2.loli.net/2024/01/29/rhcOo4GBD8kLEqv.gif)
 
 - 交互式命令行
 - 排行榜：下载当前排行榜的全部漫画
@@ -60,6 +60,11 @@ pnpm install
 # 运行
 pnpm dev
 ```
+
+## TODO
+
+- [] 使用 github action 下载
+- [] 将漫画批量打成压缩包
 
 ## 其他
 
