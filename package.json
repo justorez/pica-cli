@@ -28,10 +28,14 @@
   "engines": {
     "node": ">=18"
   },
+  "homepage": "https://github.com/justorez/pica-cli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justorez/pica-cli.git"
+  },
   "bugs": {
     "url": "https://github.com/justorez/pica-cli/issues"
   },
-  "homepage": "https://github.com/justorez/pica-cli",
   "keywords": [
     "pica",
     "bika",

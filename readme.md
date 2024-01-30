@@ -11,8 +11,9 @@
 - 收藏夹：下载当前用户收藏夹的全部漫画
 - 关键词搜索：支持多选
 - 自动过滤已下载的章节和图片，不会重复下载
-- 如果没有相关环境变量，则启动交互命令行；若有则直接执行
-- 支持分章节批量压缩，可配合支持 zip 包的漫画阅读软件使用，比如 Perfect Viewer
+- 如果没有相关环境变量，则启动交互命令界面；若有则直接执行
+- 通过 `pica-zip` 命令分章节批量压缩，配合支持 zip 包的漫画阅读软件使用，比如 [Perfect Viewer](https://play.google.com/store/apps/details?id=com.rookiestudio.perfectviewer)。
+  不限于 `pica-cli` 下载的漫画使用，只要符合 [cmoics/漫画标题/漫画章节/漫画图片](#) 的目录结构即可。
 
 ## 用法
 
@@ -46,6 +47,9 @@ PICA_DL_SEARCH_KEYWORDS=
 ```bash
 # 运行
 pica-cli
+
+# 漫画下好后，分章节压缩成 zip
+pica-zip
 ```
 
 ### 方式二：本地运行源码
@@ -62,6 +66,9 @@ pnpm install
 
 # 运行
 pnpm dev
+
+# 漫画下好后，分章节压缩成 zip
+pica-zip
 ```
 
 ## TODO
@@ -70,7 +77,7 @@ pnpm dev
 
 ## 其他
 
-> 代码参考 [lx1169732264/pica_crawler](https://github.com/lx1169732264/pica_crawler)<br>
+> 代码参考 [lx1169732264/pica_crawler](https://github.com/lx1169732264/pica_crawler)。<br>
 > 想添加新功能，奈何 Python 早就忘光了，只好重写一个。
 
 - [哔咔 API 文档（非官方）](https://www.apifox.cn/apidoc/shared-44da213e-98f7-4587-a75e-db998ed067ad/doc-1034189)
