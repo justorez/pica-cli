@@ -10,8 +10,11 @@ import picos from 'picocolors'
 loadEnv()
 
 async function main() {
+    const { PICA_DL_CONTENT, PICA_DL_CONCURRENCY, PICA_IS_GITHUB } = process.env
+    const PICA_DL_SEARCH_KEYWORDS = process.env.PICA_DL_SEARCH_KEYWORDS?.trim()
+
     const answer =
-        process.env.PICA_DL_CONTENT ||
+        PICA_DL_CONTENT ||
         (await select({
             message: '想下载哪些漫画？',
             choices: [
@@ -31,25 +34,38 @@ async function main() {
         const res = await pica.leaderboard()
         comics.push(...res)
     }
-    else if (answer === 'favorites') {
+
+    if (answer === 'favorites') {
         const res = await pica.favorites()
         comics.push(...res)
     }
-    else if (answer === 'search') {
+
+    if (answer === 'search') {
+        if (PICA_IS_GITHUB && !PICA_DL_SEARCH_KEYWORDS) {
+            console.log(picos.yellow('没有输入搜索关键字'))
+            return
+        }
+
         let searchRes: Comic[] = []
 
         const keywords =
-            process.env.PICA_DL_SEARCH_KEYWORDS ||
+            PICA_DL_SEARCH_KEYWORDS ||
             (await input({
-                message: '请输入关键字（多个用 # 隔开）'
+                message: '请输入关键字（多个用 # 隔开）',
+                transformer: (val) => val.trim()
             }))
+
+        if (!keywords) {
+            console.log(picos.yellow('没有输入搜索关键字'))
+            return
+        }
 
         for (const keyword of keywords.split('#')) {
             spinner.start(`正在搜索 ${keyword}`)
             searchRes = await pica.searchAll(keyword)
             spinner.stop()
 
-            const selected = process.env.PICA_DL_SEARCH_KEYWORDS
+            const selected = PICA_DL_SEARCH_KEYWORDS
                 ? searchRes
                 : await checkbox({
                       message: '请选择要下载的漫画',
@@ -75,7 +91,9 @@ async function main() {
         episodes = filterEpisodes(episodes, cid)
         spinner.stop()
 
-        console.log(`${picos.cyan('➡️')} ${title} 查询到 ${episodes.length} 个章节`)
+        console.log(
+            `${picos.cyan('➡️')} ${title} 查询到 ${episodes.length} 个章节`
+        )
 
         for (const ep of episodes) {
             spinner.start(`正在获取章节 ${ep.title} 的图片信息`)
@@ -84,7 +102,9 @@ async function main() {
             spinner.stop()
 
             const bar = new ProgressBar(
-                `${picos.cyan('➡️')} ${title} ${ep.title} [:bar] :current/:total`,
+                `${picos.cyan('➡️')} ${title} ${
+                    ep.title
+                } [:bar] :current/:total`,
                 {
                     incomplete: ' ',
                     width: 20,
@@ -92,7 +112,7 @@ async function main() {
                 }
             )
 
-            const concurrency = Number(process.env.PICA_DL_CONCURRENCY || 5)
+            const concurrency = Number(PICA_DL_CONCURRENCY || 5)
             const limit = pLimit(concurrency)
             const tasks = pictures.map((pic) => {
                 return limit(() => {
@@ -116,7 +136,7 @@ async function main() {
 }
 
 process.on('uncaughtException', (err) => {
-    console.error(err.message)
+    console.log(`\n${picos.red(err.message)}`)
     process.exit(0)
 })
 

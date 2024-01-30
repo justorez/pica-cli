@@ -22,6 +22,7 @@ on:
         default: 5
 
 env:
+  PICA_IS_GITHUB: true # 用于区分运行环境，不要修改
   PICA_SECRET_KEY: ${{ secrets.PICA_SECRET_KEY }}
   PICA_ACCOUNT: ${{ secrets.PICA_ACCOUNT }}
   PICA_PASSWORD: ${{ secrets.PICA_PASSWORD }}
