@@ -7,11 +7,11 @@ on:
         description: '想下点什么？搜索 | 收藏夹 | 排行榜'
         required: true
         type: choice
-        default: 'search'
+        default: search
         options:
-        - search
-        - favorites
-        - leaderboard
+          - search
+          - favorites
+          - leaderboard
       PICA_DL_SEARCH_KEYWORDS:
         description: '搜索关键字，多个用 # 隔开'
         type: string
@@ -21,9 +21,12 @@ on:
         type: number
         default: 5
       DEBUG:
-        description: '开启 DEBUG，仅用于调试代码'
-        type: string
-        default: pica
+        description: '调试模式，打印更多日志信息'
+        type: choice
+        default: 不开启
+        options:
+          - 不开启
+          - pica
 
 env:
   DEBUG: ${{ inputs.DEBUG }}
