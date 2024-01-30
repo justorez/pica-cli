@@ -1,0 +1,63 @@
+name: task
+
+on: 
+  workflow_dispatch:
+    inputs:
+      PICA_DL_CONTENT:
+        description: '想下点什么？搜索 | 收藏夹 | 排行榜'
+        required: true
+        type: choice
+        default: 'search'
+        options:
+        - search
+        - favorites
+        - leaderboard
+      PICA_DL_SEARCH_KEYWORDS:
+        description: '搜索关键字，多个用 # 隔开'
+        type: string
+      PICA_DL_CONCURRENCY:
+        description: '下载并发数'
+        required: true
+        type: number
+        default: 5
+
+env:
+  PICA_SECRET_KEY: ${{ secrets.PICA_SECRET_KEY }}
+  PICA_ACCOUNT: ${{ secrets.PICA_ACCOUNT }}
+  PICA_PASSWORD: ${{ secrets.PICA_PASSWORD }}
+  PICA_DL_CONCURRENCY: ${{ inputs.PICA_DL_CONCURRENCY }}
+  PICA_DL_CONTENT: ${{ inputs.PICA_DL_CONTENT }}
+  PICA_DL_SEARCH_KEYWORDS: ${{ inputs.PICA_DL_SEARCH_KEYWORDS }}
+
+jobs:
+  download_and_compress:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      
+      - name: install deps
+        run: pnpm install
+
+      - name: download
+        run: pnpm run dev
+
+      - name: compress
+        run: pnpm run dev:zip
+
+      - name: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: pica-comics
+          path: comics-zip/
+          retention-days: 10

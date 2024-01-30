@@ -31,18 +31,17 @@ async function main() {
         const res = await pica.leaderboard()
         comics.push(...res)
     }
-
-    if (answer === 'favorites') {
+    else if (answer === 'favorites') {
         const res = await pica.favorites()
         comics.push(...res)
     }
+    else if (answer === 'search') {
+        let searchRes: Comic[] = []
 
-    let searchRes: Comic[] = []
-    if (answer === 'search') {
         const keywords =
             process.env.PICA_DL_SEARCH_KEYWORDS ||
             (await input({
-                message: '请输入关键字'
+                message: '请输入关键字（多个用 # 隔开）'
             }))
 
         for (const keyword of keywords.split('#')) {
