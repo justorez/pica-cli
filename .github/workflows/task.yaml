@@ -20,8 +20,13 @@ on:
         required: true
         type: number
         default: 5
+      DEBUG:
+        description: '开启 DEBUG，仅用于调试代码'
+        type: string
+        default: pica
 
 env:
+  DEBUG: ${{ inputs.DEBUG }}
   PICA_IS_GITHUB: true # 用于区分运行环境，不要修改
   PICA_SECRET_KEY: ${{ secrets.PICA_SECRET_KEY }}
   PICA_ACCOUNT: ${{ secrets.PICA_ACCOUNT }}

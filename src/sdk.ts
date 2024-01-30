@@ -73,12 +73,13 @@ export class Pica {
                 url && this.retryMap.delete(url)
 
                 const result = res.data
-                // debug('%s %O', res.config.url, result)
 
                 const responseType = res.config.responseType
                 if (responseType === 'arraybuffer') {
                     return res
                 }
+
+                debug('%s %O', url, result)
 
                 if (result.code != 200) {
                     throw new Error('请求失败')
@@ -97,7 +98,7 @@ export class Pica {
                     this.retryMap.delete(url)
                 }
 
-                debug('error %s %O', url, message)
+                debug('error %s %s %O', url, message, error.response?.data)
                 return Promise.reject(message)
             }
         )
