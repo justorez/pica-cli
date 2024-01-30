@@ -1,6 +1,6 @@
 # pica-cli
 
-![NPM Version](https://img.shields.io/npm/v/pica-cli)
+![NPM Version](https://img.shields.io/npm/v/pica-cli) [![publish](https://github.com/justorez/pica-cli/actions/workflows/publish.yml/badge.svg)](https://github.com/justorez/pica-cli/actions/workflows/publish.yml)
 
 😉 哔咔漫画下载器
 
