@@ -79,6 +79,9 @@ devDependencies:
   lint-staged:
     specifier: ^15.2.0
     version: 15.2.0(supports-color@9.4.0)
+  mime:
+    specifier: ^4.0.1
+    version: 4.0.1
   ora:
     specifier: ^8.0.1
     version: 8.0.1
@@ -2361,6 +2364,12 @@ packages:
     engines: {node: '>= 0.6'}
     dependencies:
       mime-db: 1.52.0
+
+  /mime@4.0.1:
+    resolution: {integrity: sha512-5lZ5tyrIfliMXzFtkYyekWbtRXObT9OWa8IwQ5uxTBDHucNNwniRqo0yInflj+iYi5CBa6qxadGzGarDfuEOxA==}
+    engines: {node: '>=16'}
+    hasBin: true
+    dev: true
 
   /mimic-fn@2.1.0:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}

@@ -15,6 +15,10 @@ on:
       PICA_DL_SEARCH_KEYWORDS:
         description: '搜索关键字，多个用 # 隔开'
         type: string
+      OUTPUT_ZIP:
+        description: '每个章节打成独立压缩包'
+        type: boolean
+        default: true
       PICA_DL_CONCURRENCY:
         description: '下载并发数'
         required: true
@@ -52,18 +56,24 @@ jobs:
           node-version: 20
           cache: 'pnpm'
       
-      - name: install deps
-        run: pnpm install
+      - name: install and build
+        run: |
+          pnpm install
+          pnpm run build
 
       - name: download
-        run: pnpm run dev
+        run: pnpm start
 
-      - name: compress
-        run: pnpm run dev:zip
+      - if: inputs.OUTPUT_ZIP
+        name: compress
+        run: pnpm start:zip
 
-      - name: upload
+      - name: upload to github
         uses: actions/upload-artifact@v4
         with:
           name: pica-comics
-          path: comics-zip/
-          retention-days: 10
+          path: ${{ inputs.OUTPUT_ZIP && 'comics-zip/' || 'comics/' }}
+          retention-days: 7
+      
+      - name: upload to file.io
+        run: node scripts/upload.js
