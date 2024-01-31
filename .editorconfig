@@ -3,7 +3,7 @@
 # top-most EditorConfig file
 root = true
 
-[*.{yaml,yml}]
+[*.{yaml,yml,json}]
 indent_style = space
 indent_size = 2
 end_of_line = lf

@@ -1,0 +1,6 @@
+node_modules/
+*.d.ts
+pnpm-lock.yaml
+yarn.lock
+*.md
+dist/
