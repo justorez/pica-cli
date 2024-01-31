@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       PICA_DL_CONTENT:
-        description: '想下点什么？搜索 | 收藏夹 | 排行榜'
+        description: '想下点什么？搜索/收藏夹/排行榜'
         required: true
         type: choice
         default: search
@@ -21,15 +21,12 @@ on:
         type: number
         default: 5
       DEBUG:
-        description: '调试模式，打印更多日志信息'
-        type: choice
-        default: 不开启
-        options:
-          - 不开启
-          - pica
+        description: '调试模式'
+        type: boolean
+        default: false
 
 env:
-  DEBUG: ${{ inputs.DEBUG }}
+  DEBUG: ${{ inputs.DEBUG && 'pica' }}
   PICA_IS_GITHUB: true # 用于区分运行环境，不要修改
   PICA_SECRET_KEY: ${{ secrets.PICA_SECRET_KEY }}
   PICA_ACCOUNT: ${{ secrets.PICA_ACCOUNT }}
