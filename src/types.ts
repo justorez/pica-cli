@@ -1,4 +1,18 @@
-type Page<T> = {
+export type LoginResult = {
+    token: string
+}
+
+/**
+ * 收藏夹
+ */
+export type Favorites = {
+    docs: Comic[]
+}
+
+/**
+ * 分页
+ */
+export type Page<T> = {
     total: number
     limit: number
     page: number
@@ -6,12 +20,7 @@ type Page<T> = {
     docs: T[]
 }
 
-/**
- * 搜索分页
- */
-export type SearchPage = Page<Comic>
-
-export interface Comic {
+export type Comic = {
     updated_at: string
     author: string
     description: string
@@ -26,28 +35,26 @@ export interface Comic {
     _id: string
 }
 
+export type PageSearch = Page<Comic>
+
 /**
  * 章节图片分页
  */
-export type PicturePage = Page<MPicture>
-
-export interface Picture {
-    id: string
-    media: {
-        originalName: string
-        path: string
-        fileServer: string
-    }
-}
+export type PagePicture = Page<Picture>
 
 // my picture
-export interface MPicture {
+export interface Picture {
     id: string
     name: string // originalName
     path: string
     fileServer: string
     url: string
     epTitle: string // 章节标题
+    media: {
+        originalName: string
+        path: string
+        fileServer: string
+    }
 }
 
 export interface Episode {
@@ -56,6 +63,8 @@ export interface Episode {
     order: number
     updated_at: string
 }
+
+export type PageEpisode = Page<Episode>
 
 export interface DInfo {
     title: string // 漫画标题

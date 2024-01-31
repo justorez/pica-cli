@@ -10,9 +10,10 @@ import {
     Comic,
     Episode,
     DInfo,
-    Picture,
-    PicturePage,
-    SearchPage
+    PagePicture,
+    PageSearch,
+    PageEpisode,
+    Favorites
 } from './types'
 
 export class Pica {
@@ -48,8 +49,8 @@ export class Pica {
             })
         )
         this.api.interceptors.request.use((config) => {
-            let { url, method } = config
-            url = url?.replace(/^\/|\/$/g, '') // url 首尾不能有 "/"
+            const method = config.method
+            const url = config.url?.replace(/^\/|\/$/g, '') // url 首尾不能有 "/"
             const timestamp = String(Date.now()).slice(0, -3)
             const raw =
                 url + timestamp + headers.nonce + method + headers['api-key']
@@ -105,13 +106,14 @@ export class Pica {
     }
 
     async login() {
-        const res = await this.request('post', 'auth/sign-in', {
+        const res = await this.request<string>('post', 'auth/sign-in', {
             email: process.env.PICA_ACCOUNT,
             password: process.env.PICA_PASSWORD
         }).catch((err) => {
             debug('\n登录异常 %s', err)
             throw new Error('登录失败，请检查账号/密码/网络环境')
         })
+
         if (!res.token) {
             throw new Error('PICA_SECRET_KEY 错误')
         }
@@ -155,7 +157,7 @@ export class Pica {
      */
     async episodes(bookId: string, page = 1) {
         const url = `comics/${bookId}/eps?page=${page}`
-        const res = await this.request('get', url)
+        const res = await this.request<PageEpisode>('get', url)
         return res.eps
     }
 
@@ -164,9 +166,9 @@ export class Pica {
      */
     async episodesAll(bookId: string) {
         const firstPage = await this.episodes(bookId)
-        let pages = firstPage.pages // 总页数
-        let total = firstPage.total // 总章节数
-        const episodes = firstPage.docs as Episode[]
+        const pages = firstPage.pages // 总页数
+        const total = firstPage.total // 总章节数
+        const episodes = firstPage.docs
         for (let i = 2; i <= pages; i++) {
             const res = await this.episodes(bookId, i)
             episodes.push(...res.docs)
@@ -183,18 +185,18 @@ export class Pica {
      */
     async pictures(bookId: string, orderId: string | number, page = 1) {
         const url = `comics/${bookId}/order/${orderId}/pages?page=${page}`
-        const res = await this.request('get', url)
-        res.pages.docs = res.pages.docs.map((doc: Picture) => {
+        const res = await this.request<PagePicture>('get', url)
+        res.pages.docs = res.pages.docs.map((doc) => {
             const fileServer =
                 process.env.PICA_FILE_SERVER || doc.media.fileServer
             return {
-                id: doc.id,
+                ...doc,
                 ...doc.media,
                 name: doc.media.originalName,
                 url: `${fileServer}/static/${doc.media.path}`
             }
         })
-        return res.pages as PicturePage
+        return res.pages
     }
 
     /**
@@ -217,7 +219,6 @@ export class Pica {
     }
 
     async download(url: string, info: DInfo): Promise<void> {
-
         // 使用单独的 axios 请求
         // 哔咔的某些文件服务器安全证书不可用，我真服了！
         // 把图片 https 全部换成 http
@@ -231,7 +232,7 @@ export class Pica {
         const res = await this.api.get<Buffer>(url, {
             responseType: 'arraybuffer',
             maxRedirects: 0,
-            validateStatus: (status) => (status >= 200 && status < 304)
+            validateStatus: (status) => status >= 200 && status < 304
         })
 
         // 由于 axio 的自动重定向过程无法修改，只好手动处理
@@ -254,8 +255,8 @@ export class Pica {
     async search(keyword: string, page = 1, sort = this.Order.latest) {
         const url = `comics/advanced-search?page=${page}`
         const data = { keyword, sort }
-        const res = await this.request('post', url, data)
-        return res.comics as SearchPage
+        const res = await this.request<PageSearch>('post', url, data)
+        return res.comics
     }
 
     async searchAll(keyword: string) {
@@ -290,8 +291,8 @@ export class Pica {
      */
     async favorites() {
         const url = 'users/favourite'
-        const res = await this.request('get', url)
-        return res.comics.docs as Comic[]
+        const res = await this.request<Favorites>('get', url)
+        return res.comics.docs
     }
 
     /**
@@ -302,11 +303,11 @@ export class Pica {
         return this.request('post', url)
     }
 
-    request(
+    request<T>(
         method: string,
         url: string,
         data?: object
-    ): Promise<Record<string, any>> {
+    ): Promise<Record<string, T>> {
         return this.api.request({
             url,
             method,
