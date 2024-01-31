@@ -252,7 +252,7 @@ export class Pica {
         return fs.writeFile(file, res.data)
     }
 
-    async search(keyword: string, page = 1, sort = this.Order.latest) {
+    async search(keyword: string, page = 1, sort = this.Order.loved) {
         const url = `comics/advanced-search?page=${page}`
         const data = { keyword, sort }
         const res = await this.request<PageSearch>('post', url, data)
