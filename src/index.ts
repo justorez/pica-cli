@@ -102,9 +102,7 @@ async function main() {
             spinner.stop()
 
             const bar = new ProgressBar(
-                `${picos.cyan('➡️')} ${title} ${
-                    ep.title
-                } [:bar] :current/:total`,
+                `${picos.cyan('➡️')} ${title} ${ep.title} [:bar] :current/:total`,
                 {
                     incomplete: ' ',
                     width: 20,

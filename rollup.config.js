@@ -21,11 +21,7 @@ export default defineConfig({
         entryFileNames: '[name].js',
         format: 'es'
     },
-    external: [
-        ...Object.keys(pkg.dependencies),
-        ...builtinModules,
-        /node:/
-    ],
+    external: [...Object.keys(pkg.dependencies), ...builtinModules, /node:/],
     plugins: [
         json(),
         esbuild({
@@ -33,9 +29,9 @@ export default defineConfig({
             minify: true
         }),
         nodeResolve({
-            preferBuiltins: false,
+            preferBuiltins: false
             // 为什么设置之后就报错？
-            // [!] (plugin commonjs--resolver) 
+            // [!] (plugin commonjs--resolver)
             // TypeError: The "path" argument must be of type string or an instance of URL. Received null
             // exportConditions: ['node']
         }),

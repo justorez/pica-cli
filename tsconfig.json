@@ -3,25 +3,18 @@
     "strict": true,
     "module": "ESNext",
     "target": "ESNext",
-    "lib": [
-      "ES2020"
-    ],
+    "lib": ["ES2020"],
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "declaration": false,
     "resolveJsonModule": true,
     "sourceMap": false,
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "paths": {
       "@/*": ["./src/*"],
       "src/*": ["./src/*"]
     }
   },
-  "include": [
-    "src/*.ts",
-    "rollup.config.ts"
-  ]
+  "include": ["src/*.ts"]
 }

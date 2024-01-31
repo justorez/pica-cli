@@ -8,13 +8,14 @@ loadEnv()
 
 // 保存测试中的数据，可以在后续开发中参考响应的数据结构
 const p = (...args: string[]) => path.resolve(process.cwd(), 'tmp', ...args)
-const pica = new Pica()
-
-beforeAll(async () => {
-    await pica.login()
-})
 
 describe('测试哔咔相关 API', () => {
+    const pica = new Pica()
+
+    beforeAll(async () => {
+        await pica.login()
+    })
+
     it('获取排行榜', async () => {
         const res = await pica.leaderboard()
         fs.writeFileSync(p('leaderboard.json'), JSON.stringify(res), 'utf8')
@@ -25,7 +26,7 @@ describe('测试哔咔相关 API', () => {
         fs.writeFileSync(p('favorites.json'), JSON.stringify(res), 'utf8')
     })
 
-    it('搜索漫画',async () => {
+    it('搜索漫画', async () => {
         const res = await pica.searchAll('美丽新世界')
         fs.writeFileSync(p('searchAll.json'), JSON.stringify(res), 'utf8')
     })
@@ -41,7 +42,11 @@ describe('测试哔咔相关 API', () => {
         const episodes = await pica.episodesAll(bookId)
         for (const ep of episodes.slice(0, 2)) {
             const res = await pica.picturesAll(bookId, ep)
-            fs.writeFileSync(p(`picturesAll.${ep.order}.json`), JSON.stringify(res), 'utf8')
+            fs.writeFileSync(
+                p(`picturesAll.${ep.order}.json`),
+                JSON.stringify(res),
+                'utf8'
+            )
         }
     })
 })

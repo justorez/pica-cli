@@ -1,110 +1,110 @@
 {
-    "name": "pica-cli",
-    "author": "justorez",
-    "version": "1.1.0",
-    "description": "😉 哔咔漫画下载器",
-    "packageManager": "pnpm@8.14.3",
-    "type": "module",
-    "bin": {
-        "pica-cli": "dist/index.js",
-        "pica-zip": "dist/zip.js"
-    },
-    "scripts": {
-        "dev": "tsx src/index.ts",
-        "dev:zip": "tsx src/zip.ts",
-        "start": "pnpm build && node dist/index.js",
-        "build": "rimraf dist && rollup --config rollup.config.ts --configPlugin typescript",
-        "test": "vitest",
-        "test:ui": "vitest --ui",
-        "pub": "pnpm build && pnpm publish",
-        "lint": "eslint . --ext js,cjs,ts, --ignore-path .gitignore",
-        "lint:fix": "eslint . --fix",
-        "format": "prettier --write .",
-        "format:check": "prettier --check ."
-    },
-    "simple-git-hooks": {
-        "pre-commit": "pnpm lint-staged",
-        "commit-msg": "node scripts/verify-commit.js"
-    },
-    "lint-staged": {
-        "*.{js,json}": [
-            "prettier --write"
-        ],
-        "*.{js,cjs,ts}": [
-            "eslint --fix",
-            "prettier --parser=typescript --write"
-        ]
-    },
-    "publishConfig": {
-        "access": "public",
-        "registry": "https://registry.npmjs.org/"
-    },
-    "files": [
-        "dist"
+  "name": "pica-cli",
+  "author": "justorez",
+  "version": "1.1.0",
+  "description": "😉 哔咔漫画下载器",
+  "packageManager": "pnpm@8.14.3",
+  "type": "module",
+  "bin": {
+    "pica-cli": "dist/index.js",
+    "pica-zip": "dist/zip.js"
+  },
+  "scripts": {
+    "postinstall": "simple-git-hooks",
+    "dev": "tsx src/index.ts",
+    "dev:zip": "tsx src/zip.ts",
+    "start": "pnpm build && node dist/index.js",
+    "build": "rimraf dist && rollup --config rollup.config.js",
+    "test": "vitest",
+    "pub": "pnpm build && pnpm publish",
+    "check": "tsc --incremental --noEmit",
+    "lint": "eslint --cache --ext js,cjs,ts, --ignore-path .gitignore .",
+    "lint:fix": "eslint --cache --fix --ignore-path .gitignore .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged",
+    "commit-msg": "node scripts/verify-commit.js"
+  },
+  "lint-staged": {
+    "*.json": [
+      "prettier --write"
     ],
-    "engines": {
-        "node": ">=18"
-    },
-    "homepage": "https://github.com/justorez/pica-cli",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/justorez/pica-cli.git"
-    },
-    "bugs": {
-        "url": "https://github.com/justorez/pica-cli/issues"
-    },
-    "keywords": [
-        "pica",
-        "bika",
-        "cli",
-        "inquirer",
-        "download",
-        "哔咔",
-        "漫画"
-    ],
-    "license": "MIT",
-    "devDependencies": {
-        "@inquirer/prompts": "^3.3.2",
-        "@rollup/plugin-commonjs": "^25.0.7",
-        "@rollup/plugin-json": "^6.1.0",
-        "@rollup/plugin-node-resolve": "^15.2.3",
-        "@rollup/plugin-typescript": "^11.1.6",
-        "@types/adm-zip": "^0.5.5",
-        "@types/debug": "^4.1.12",
-        "@types/node": "^20.11.7",
-        "@types/progress": "^2.0.7",
-        "@types/tough-cookie": "^4.0.5",
-        "@typescript-eslint/eslint-plugin": "^6.20.0",
-        "@typescript-eslint/parser": "^6.20.0",
-        "@vitest/ui": "^1.2.2",
-        "adm-zip": "^0.5.10",
-        "axios": "^1.6.7",
-        "debug": "^4.3.4",
-        "dotenv": "^16.4.1",
-        "esbuild": "^0.20.0",
-        "eslint": "^8.56.0",
-        "eslint-config-prettier": "^9.1.0",
-        "eslint-plugin-prettier": "^5.1.3",
-        "lint-staged": "^15.2.0",
-        "ora": "^8.0.1",
-        "p-limit": "^5.0.0",
-        "picocolors": "^1.0.0",
-        "prettier": "3.2.4",
-        "progress": "^2.0.3",
-        "rimraf": "^5.0.5",
-        "rollup": "^4.9.6",
-        "rollup-plugin-esbuild": "^6.1.1",
-        "rollup-plugin-visualizer": "^5.12.0",
-        "simple-git-hooks": "^2.9.0",
-        "tough-cookie": "^4.1.3",
-        "tslib": "^2.6.2",
-        "tsx": "^4.7.0",
-        "typescript": "^5.3.3",
-        "vitest": "^1.2.2"
-    },
-    "dependencies": {
-        "axios-cookiejar-support": "^5.0.0",
-        "chalk": "^5.3.0",
-        "supports-color": "^9.4.0"
-    }
+    "*.{js,cjs,ts}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "homepage": "https://github.com/justorez/pica-cli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justorez/pica-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/justorez/pica-cli/issues"
+  },
+  "keywords": [
+    "pica",
+    "bika",
+    "cli",
+    "inquirer",
+    "download",
+    "哔咔",
+    "漫画"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@inquirer/prompts": "^3.3.2",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@types/adm-zip": "^0.5.5",
+    "@types/debug": "^4.1.12",
+    "@types/node": "^20.11.7",
+    "@types/progress": "^2.0.7",
+    "@types/tough-cookie": "^4.0.5",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
+    "@vitest/ui": "^1.2.2",
+    "adm-zip": "^0.5.10",
+    "axios": "^1.6.7",
+    "debug": "^4.3.4",
+    "dotenv": "^16.4.1",
+    "esbuild": "^0.20.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "lint-staged": "^15.2.0",
+    "ora": "^8.0.1",
+    "p-limit": "^5.0.0",
+    "picocolors": "^1.0.0",
+    "prettier": "3.2.4",
+    "progress": "^2.0.3",
+    "rimraf": "^5.0.5",
+    "rollup": "^4.9.6",
+    "rollup-plugin-esbuild": "^6.1.1",
+    "rollup-plugin-visualizer": "^5.12.0",
+    "simple-git-hooks": "^2.9.0",
+    "tough-cookie": "^4.1.3",
+    "tslib": "^2.6.2",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
+  },
+  "dependencies": {
+    "axios-cookiejar-support": "^5.0.0",
+    "chalk": "^5.3.0",
+    "supports-color": "^9.4.0"
+  }
 }

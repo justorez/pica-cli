@@ -13,7 +13,7 @@ function main() {
         return
     }
 
-    const comics = fs.readdirSync(root).filter(d => {
+    const comics = fs.readdirSync(root).filter((d) => {
         return fs.statSync(path.join(root, d)).isDirectory()
     })
 
@@ -22,7 +22,9 @@ function main() {
         return
     }
 
-    console.log(`${comics.length} 本漫画等待打包：${pico.cyan(comics.join(', '))}`)
+    console.log(
+        `${pico.cyan(comics.length)} 本漫画等待打包：${pico.cyan(comics.join(', '))}`
+    )
 
     for (const comic of comics) {
         const comicRoot = path.join(root, comic)
@@ -44,11 +46,10 @@ function main() {
             const zip = new AdmZip()
             zip.addLocalFolder(path.join(comicRoot, ep))
             zip.writeZip(path.join(dir, `${ep}.zip`))
-            
+
             bar.tick()
-        
         }
-        
+
         console.log(pico.green(`✓ ${comic} 打包完成`))
     }
 }

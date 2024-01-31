@@ -1,7 +1,7 @@
 import path from 'node:path'
 import dotenv from 'dotenv'
 import fs from 'node:fs'
-import { Episode, MPicture } from './types'
+import { Episode, Picture } from './types'
 import Debug from 'debug'
 
 export const debug = Debug('pica')
@@ -23,8 +23,11 @@ export function filterEpisodes(episodes: Episode[], bookId: string) {
     if (!fs.existsSync(donePath)) {
         return episodes
     }
-    const done = fs.readFileSync(donePath, 'utf8').split(/\n|\r\n/).filter(x => x)
-    return episodes.filter(ep => !done.includes(`${bookId}/${ep.id}`))
+    const done = fs
+        .readFileSync(donePath, 'utf8')
+        .split(/\n|\r\n/)
+        .filter((x) => x)
+    return episodes.filter((ep) => !done.includes(`${bookId}/${ep.id}`))
 }
 
 /**
@@ -32,13 +35,21 @@ export function filterEpisodes(episodes: Episode[], bookId: string) {
  * @param title 漫画标题
  * @param epTitle 章节标题
  */
-export function filterPictures(pictures: MPicture[], title: string, epTitle: string) {
-    const dir = resolvePath('comics', normalizeName(title), normalizeName(epTitle))
+export function filterPictures(
+    pictures: Picture[],
+    title: string,
+    epTitle: string
+) {
+    const dir = resolvePath(
+        'comics',
+        normalizeName(title),
+        normalizeName(epTitle)
+    )
     if (!fs.existsSync(dir)) {
         return pictures
     }
     const files = fs.readdirSync(dir)
-    return pictures.filter(pic => !files.includes(pic.name))
+    return pictures.filter((pic) => !files.includes(pic.name))
 }
 
 export function loadEnv() {
