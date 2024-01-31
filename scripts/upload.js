@@ -26,11 +26,12 @@ async function main() {
     const task = comics.map(async (comic) => {
         try {
             const zip = new AdmZip()
-            await zip.addLocalFolderPromise(path.join(root, comic))
+            // don't use addLocalFolderPromise, it has bug
+            zip.addLocalFolder(path.join(root, comic))
             const zipBuffer = await zip.toBufferPromise()
+            const filename = `${comic}.zip`
 
             if (zipBuffer.byteLength < MAX_SIZE) {
-                const filename = `${comic}.zip`
                 const file = new File([zipBuffer], filename, {
                     type: mime.getType('zip')
                 })
@@ -41,8 +42,10 @@ async function main() {
                     form
                 )
                 console.log(
-                    `${pico.cyan(comic)} 已上传到 file.io. 下载地址：${pico.green(data.link)}`
+                    `${pico.cyan(filename)} 已上传到 file.io. 下载地址：${pico.green(data.link)}`
                 )
+            } else {
+                console.log(pico.yellow(`${filename} 大小超过了 2GB`))
             }
         } catch (error) {
             console.error(error)

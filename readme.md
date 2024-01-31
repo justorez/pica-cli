@@ -12,9 +12,10 @@
 - 关键词搜索：支持多选
 - 自动过滤已下载的章节和图片，不会重复下载
 - 如果没有相关环境变量，则启动交互命令界面；若有则直接执行
-- 通过 `pica-zip` 命令分章节批量压缩，配合支持 zip 包的漫画阅读软件使用，比如 [Perfect Viewer](https://play.google.com/store/apps/details?id=com.rookiestudio.perfectviewer)。
+- 通过 `pica-zip` 命令分章节批量压缩，配合支持 zip 包的漫画阅读软件使用，比如 [Perfect Viewer](https://play.google.com/store/apps/details?id=com.rookiestudio.perfectviewer)。<br>
   不限于 `pica-cli` 下载的漫画使用，只要符合 [cmoics/漫画标题/漫画章节/漫画图片](#) 的目录结构即可。
-- 借助 github action 实现飞速下载，同时将下好的漫画包上传到 github artifact 和 file.io（无需注册和科学上网）
+- 借助 github action 实现飞速下载，支持从 github artifact 和 file.io（无需注册和科学上网）两种方式下载完整漫画包。<br>
+  file.io 文件保存两周，单文件最大 2GB，注意链接只能下载**一次**，下载后文件会自动删除
 
 如果用的开心，求个 star 支持一下，比心 ~ ❤️
 
@@ -42,11 +43,13 @@ fork 一份本仓库，将上面三个环境变量，设置为仓库密钥：
 
 ![action run](https://s2.loli.net/2024/01/30/PmfublZKLFQrth9.png)
 
-等执行完之后，进入执行详情，点击 Summary，在最下方有漫画的完整压缩包，下载即可。
+等执行完之后，进入详情，在最下方有漫画的完整压缩包，下载即可。
 
-![action summary](https://s2.loli.net/2024/01/30/eiRu2B9hovJxOzQ.png)
+![artifact](https://s2.loli.net/2024/01/31/rIlTGfy8O5HiFcV.png)
 
-![artifact](https://s2.loli.net/2024/01/30/MJBxVe9UtszNmiv.png)
+点击 job 详情查看日志，可以看到 file.io 的下载地址：
+
+![file.io](https://s2.loli.net/2024/01/31/UT4i6zpGjYvDxL3.png)
 
 如果你想自定义过程，请自行修改 [.github/workflows/task.yaml](.github/workflows/task.yaml)。
 

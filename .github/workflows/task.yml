@@ -40,23 +40,24 @@ env:
   PICA_DL_SEARCH_KEYWORDS: ${{ inputs.PICA_DL_SEARCH_KEYWORDS }}
 
 jobs:
-  download_and_compress:
+  download:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - name: install pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      - name: install node
+      - name: Install node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
       
-      - name: install and build
+      - name: Install deps and build
         run: |
           pnpm install
           pnpm run build
@@ -65,15 +66,15 @@ jobs:
         run: pnpm start
 
       - if: inputs.OUTPUT_ZIP
-        name: compress
+        name: Compress
         run: pnpm start:zip
 
-      - name: upload to github
+      - name: Upload to github
         uses: actions/upload-artifact@v4
         with:
           name: pica-comics
           path: ${{ inputs.OUTPUT_ZIP && 'comics-zip/' || 'comics/' }}
           retention-days: 7
       
-      - name: upload to file.io
+      - name: Upload to file.io
         run: node scripts/upload.js
