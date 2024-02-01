@@ -1,15 +1,16 @@
 import AdmZip from 'adm-zip'
 import path from 'node:path'
 import fs from 'node:fs'
-import pico from 'picocolors'
 import ProgressBar from 'progress'
+import pico from 'picocolors'
+import { log } from './utils'
 
 function main() {
     const root = path.resolve(process.cwd(), 'comics')
     const dest = path.resolve(process.cwd(), 'comics-zip')
 
     if (!fs.existsSync(root)) {
-        console.log(pico.yellow('没有发现已下载的漫画'))
+        log.warn('没有发现已下载的漫画')
         return
     }
 
@@ -18,11 +19,11 @@ function main() {
     })
 
     if (comics.length === 0) {
-        console.log(pico.yellow('没有发现已下载的漫画'))
+        log.warn('没有发现已下载的漫画')
         return
     }
 
-    console.log(
+    log.info(
         `${pico.cyan(comics.length)} 本漫画等待打包：${pico.cyan(comics.join(', '))}`
     )
 
@@ -50,8 +51,10 @@ function main() {
             bar.tick()
         }
 
-        console.log(pico.green(`✓ ${comic} 打包完成`))
+        // log.success(`${comic} 打包完成`)
     }
+
+    log.success(`打包完成`)
 }
 
 main()

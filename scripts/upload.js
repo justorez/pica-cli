@@ -6,9 +6,19 @@ import axios from 'axios'
 import mime from 'mime'
 import AdmZip from 'adm-zip'
 import pico from 'picocolors'
+import figures from 'figures'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const MAX_SIZE = 2 * 1024 * 1024 * 1024 // 2GB
+
+const log = {
+    log: (...msg) => console.log(...msg),
+    info: (...msg) => console.log(pico.cyan('➡️'), ...msg),
+    warn: (...msg) =>
+        console.log(pico.yellow(`${figures.warning} ${msg.join(' ')}`)),
+    error: (...msg) =>
+        console.log(pico.red(`${figures.cross} ${msg.join(' ')}`))
+}
 
 // https://file.io/
 async function main() {
@@ -17,7 +27,7 @@ async function main() {
     if (!existsSync(root)) {
         root = path.resolve(__dirname, '../comics')
         if (!existsSync(root)) {
-            console.log(pico.yellow('没有发现已下载的漫画'))
+            log.warn('没有发现已下载的漫画')
             return
         }
     }
@@ -41,11 +51,11 @@ async function main() {
                     `https://file.io?title=${filename}`,
                     form
                 )
-                console.log(
+                log.log(
                     `${pico.cyan(filename)} 已上传到 file.io. 下载地址：${pico.green(data.link)}`
                 )
             } else {
-                console.log(pico.yellow(`${filename} 大小超过了 2GB`))
+                log.warn(`${filename} 大小超过了 2GB`)
             }
         } catch (error) {
             console.error(error)

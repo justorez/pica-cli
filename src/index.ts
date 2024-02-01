@@ -1,11 +1,18 @@
 import { Pica } from './sdk'
-import { filterEpisodes, filterPictures, loadEnv, mark } from './utils'
+import {
+    log,
+    mark,
+    loadEnv,
+    filterEpisodes,
+    filterPictures,
+    isValidComicId
+} from './utils'
 import ora from 'ora'
 import { select, checkbox, input } from '@inquirer/prompts'
 import ProgressBar from 'progress'
 import { Comic } from './types'
 import pLimit from 'p-limit'
-import picos from 'picocolors'
+import pico from 'picocolors'
 
 loadEnv()
 
@@ -42,25 +49,42 @@ async function main() {
 
     if (answer === 'search') {
         if (PICA_IS_GITHUB && !PICA_DL_SEARCH_KEYWORDS) {
-            console.log(picos.yellow('没有输入搜索关键字'))
+            log.warn('没有输入搜索关键字')
             return
         }
 
         let searchRes: Comic[] = []
 
-        const keywords =
+        const inputStr =
             PICA_DL_SEARCH_KEYWORDS ||
             (await input({
-                message: '请输入关键字（多个用 # 隔开）',
+                message: '请输入关键字或者漫画ID (多个用 # 隔开)',
                 transformer: (val) => val.trim()
             }))
 
-        if (!keywords) {
-            console.log(picos.yellow('没有输入搜索关键字'))
+        if (!inputStr) {
+            log.warn('没有输入搜索关键字')
             return
         }
 
-        for (const keyword of keywords.split('#')) {
+        const inputKeys = inputStr.split('#')
+
+        // 根据漫画ID查询
+        const bookIds = inputKeys.filter((k: string) => isValidComicId(k))
+        for (const id of bookIds) {
+            try {
+                const info = await pica.comicInfo(id)
+                info.title = info.title.trim()
+                comics.push(info)
+                log.info(`${info.title} 已加入下载队列`)
+            } catch (error) {
+                log.error(`无效漫画ID ${id}`)
+            }
+        }
+
+        // 根据关键字查询
+        const keywords = inputKeys.filter((k: string) => !isValidComicId(k))
+        for (const keyword of keywords) {
             spinner.start(`正在搜索 ${keyword}`)
             searchRes = await pica.searchAll(keyword)
             spinner.stop()
@@ -91,9 +115,7 @@ async function main() {
         episodes = filterEpisodes(episodes, cid)
         spinner.stop()
 
-        console.log(
-            `${picos.cyan('➡️')} ${title} 查询到 ${episodes.length} 个章节`
-        )
+        log.info(`${title} 查询到 ${episodes.length} 个章节`)
 
         for (const ep of episodes) {
             spinner.start(`正在获取章节 ${ep.title} 的图片信息`)
@@ -102,7 +124,7 @@ async function main() {
             spinner.stop()
 
             const bar = new ProgressBar(
-                `${picos.cyan('➡️')} ${title} ${ep.title} [:bar] :current/:total`,
+                `${pico.cyan('➡️')} ${title} ${ep.title} [:bar] :current/:total`,
                 {
                     incomplete: ' ',
                     width: 20,
@@ -129,12 +151,13 @@ async function main() {
             mark(cid, ep.id)
         }
 
-        console.log(picos.green(`✓ ${picos.bold(title)} 下载完成`))
+        log.success(`${title} 下载完成`)
     }
 }
 
 process.on('uncaughtException', (err) => {
-    console.log(`\n${picos.red(err.message)}`)
+    console.log('\n')
+    log.error(`${err.message}`)
     process.exit(0)
 })
 

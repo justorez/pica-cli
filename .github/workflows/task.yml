@@ -13,7 +13,7 @@ on:
           - favorites
           - leaderboard
       PICA_DL_SEARCH_KEYWORDS:
-        description: '搜索关键字，多个用 # 隔开'
+        description: '搜索关键字或者漫画ID (多个用 # 隔开)'
         type: string
       OUTPUT_ZIP:
         description: '每个章节打成独立压缩包'

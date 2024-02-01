@@ -148,7 +148,7 @@ export class Pica {
      */
     async comicInfo(bookId: string) {
         const url = `comics/${bookId}`
-        const res = await this.request('get', url)
+        const res = await this.request<Comic>('get', url)
         return res.comic
     }
 

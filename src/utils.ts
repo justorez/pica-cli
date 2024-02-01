@@ -3,8 +3,14 @@ import dotenv from 'dotenv'
 import fs from 'node:fs'
 import { Episode, Picture } from './types'
 import Debug from 'debug'
+import pico from 'picocolors'
+import figures from 'figures'
 
 export const debug = Debug('pica')
+
+export function isValidComicId(cid: string) {
+    return /^[0-9a-zA-Z]{24}$/.test(cid)
+}
 
 /**
  * 标记某章节已下载完成，并记录到本地临时文件
@@ -80,4 +86,21 @@ export function normalizeName(s: string) {
         .replace(/</g, '＜')
         .replace(/>/g, '＞')
         .replace(/:/g, '-')
+}
+
+type LogMsg = string[] | number[]
+// √ ✕
+export const log = {
+    log: (...msg: LogMsg) => console.log(...msg),
+    info: (...msg: LogMsg) => console.log(pico.cyan('➡️'), ...msg),
+    warn: (...msg: LogMsg) =>
+        console.log(pico.yellow(`${figures.warning} ${msg.join(' ')}`)),
+    error: (...msg: LogMsg) =>
+        console.log(pico.red(`${figures.cross} ${msg.join(' ')}`)),
+    success: (...msg: LogMsg) =>
+        console.log(pico.green(`${figures.tick} ${msg.join(' ')}`))
+}
+
+export function sleep(s: number) {
+    return new Promise((r) => setTimeout(r, s * 1000))
 }

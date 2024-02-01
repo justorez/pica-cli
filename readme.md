@@ -4,18 +4,16 @@
 
 😉 哔咔漫画下载器
 
-![演示](https://s2.loli.net/2024/01/29/rhcOo4GBD8kLEqv.gif)
+![演示](https://s2.loli.net/2024/02/01/Qc7L3qGZOWBPmkR.gif)
 
 - 交互式命令行
 - 排行榜：下载当前排行榜的全部漫画
 - 收藏夹：下载当前用户收藏夹的全部漫画
-- 关键词搜索：支持多选
+- 搜索：支持关键字和漫画ID (多个用 # 隔开)。访问哔咔电脑端网站，进入漫画详情，地址栏链接里的 `cid` 就是漫画ID
 - 自动过滤已下载的章节和图片，不会重复下载
 - 如果没有相关环境变量，则启动交互命令界面；若有则直接执行
-- 通过 `pica-zip` 命令分章节批量压缩，配合支持 zip 包的漫画阅读软件使用，比如 [Perfect Viewer](https://play.google.com/store/apps/details?id=com.rookiestudio.perfectviewer)。<br>
-  不限于 `pica-cli` 下载的漫画使用，只要符合 [cmoics/漫画标题/漫画章节/漫画图片](#) 的目录结构即可。
-- 借助 github action 实现飞速下载，支持从 github artifact 和 file.io（无需注册和科学上网）两种方式下载完整漫画包。<br>
-  file.io 文件保存两周，单文件最大 2GB，注意链接只能下载**一次**，下载后文件会自动删除
+- 通过 `pica-zip` 命令分章节批量压缩，配合支持 zip 的漫画阅读软件使用，比如 [Perfect Viewer](https://play.google.com/store/apps/details?id=com.rookiestudio.perfectviewer)。不限于 `pica-cli` 下载的漫画，只要符合 [cmoics/漫画标题/漫画章节/漫画图片](#) 的目录结构即可。
+- 借助 github action 实现飞速下载，支持从 github artifact 和 file.io 两种方式下载完整漫画包。file.io 无需注册，无需科学上网，文件保存两周，单文件最大 2GB，注意链接只能下载**一次**，下载后文件会自动删除
 
 如果用的开心，求个 star 支持一下，比心 ~ ❤️
 
@@ -35,11 +33,11 @@ PICA_ACCOUNT
 PICA_PASSWORD
 ```
 
-fork 一份本仓库，将上面三个环境变量，设置为仓库密钥：
+fork 一份[本仓库](https://github.com/justorez/pica-cli)，将上面三个环境变量，设置为仓库密钥：
 
 ![action secret](https://s2.loli.net/2024/01/30/5FxU7olyWC3VAe1.png)
 
-然后点击 Actions，再点击左侧的 `task` 工作流，再点击右侧的 `Run workflow`，输入相关的信息，点击运行即可。
+然后点击 Actions，再点击左侧的 `task` 工作流，再点击右侧的 `Run workflow`，输入相关的信息，点击运行。
 
 ![action run](https://s2.loli.net/2024/01/30/PmfublZKLFQrth9.png)
 
@@ -51,7 +49,7 @@ fork 一份本仓库，将上面三个环境变量，设置为仓库密钥：
 
 ![file.io](https://s2.loli.net/2024/01/31/UT4i6zpGjYvDxL3.png)
 
-如果你想自定义过程，请自行修改 [.github/workflows/task.yaml](.github/workflows/task.yaml)。
+如果你想自定义过程，请自行修改 [.github/workflows/task.yml](.github/workflows/task.yml)。
 
 ### 方式二：直接安装
 
@@ -110,6 +108,7 @@ pnpm dev:zip
 
 ## 更新日志
 
+- 2024/02/01 支持通过漫画ID精确下载
 - 2024/01/31 github action 同时将漫画包上传到 file.io
 - 2024/01/30 提供 github action 的下载方式
 - 2024/01/29 下载完成后，提供命令把漫画按章节批量压缩
