@@ -12,7 +12,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const MAX_SIZE = 2 * 1024 * 1024 * 1024 // 2GB
 
 const log = {
-    log: (...msg) => console.log(...msg),
     info: (...msg) => console.log(pico.cyan('➡️'), ...msg),
     warn: (...msg) =>
         console.log(pico.yellow(`${figures.warning} ${msg.join(' ')}`)),
@@ -36,9 +35,9 @@ async function main() {
     const task = comics.map(async (comic) => {
         try {
             const zip = new AdmZip()
-            // don't use addLocalFolderPromise, it has bug
+            // don't use promise function of AdmZip, its have too many bugs
             zip.addLocalFolder(path.join(root, comic))
-            const zipBuffer = await zip.toBufferPromise()
+            const zipBuffer = zip.toBuffer()
             const filename = `${comic}.zip`
 
             if (zipBuffer.byteLength < MAX_SIZE) {
@@ -51,7 +50,8 @@ async function main() {
                     `https://file.io?title=${filename}`,
                     form
                 )
-                log.log(
+
+                console.log(
                     `${pico.cyan(filename)} 已上传到 file.io. 下载地址：${pico.green(data.link)}`
                 )
             } else {
