@@ -8,7 +8,9 @@ import {
     isValidComicId
 } from './utils'
 import ora from 'ora'
-import { select, checkbox, input } from '@inquirer/prompts'
+import input from '@inquirer/input'
+import select from '@inquirer/select'
+import checkbox from '@inquirer/checkbox'
 import ProgressBar from 'progress'
 import { Comic } from './types'
 import pLimit from 'p-limit'

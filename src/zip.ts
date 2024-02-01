@@ -23,9 +23,7 @@ function main() {
         return
     }
 
-    log.info(
-        `${pico.cyan(comics.length)} 本漫画等待打包：${pico.cyan(comics.join(', '))}`
-    )
+    log.info(`${comics.length}本漫画等待打包：${pico.cyan(comics.join(', '))}`)
 
     for (const comic of comics) {
         const comicRoot = path.join(root, comic)

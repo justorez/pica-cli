@@ -1,6 +1,4 @@
 import axios, { AxiosError } from 'axios'
-import { wrapper } from 'axios-cookiejar-support'
-import { CookieJar } from 'tough-cookie'
 import headers from './data/headers.json'
 import { createHmac } from 'node:crypto'
 import path from 'node:path'
@@ -30,24 +28,20 @@ export class Pica {
     retryMap = new Map<string, number>() // <url, retryCount>
 
     constructor() {
-        const jar = new CookieJar()
         const httpProxy = process.env.PICA_PROXY
             ? new URL(process.env.PICA_PROXY as string)
             : false
-        this.api = wrapper(
-            axios.create({
-                baseURL: 'https://picaapi.picacomic.com/',
-                // baseURL: 'https://api.manhuapica.com/',
-                jar,
-                proxy: httpProxy
-                    ? {
-                          protocol: httpProxy.protocol,
-                          host: httpProxy.hostname,
-                          port: Number(httpProxy.port)
-                      }
-                    : false
-            })
-        )
+        this.api = axios.create({
+            baseURL: 'https://picaapi.picacomic.com/',
+            // baseURL: 'https://api.manhuapica.com/',
+            proxy: httpProxy
+                ? {
+                      protocol: httpProxy.protocol,
+                      host: httpProxy.hostname,
+                      port: Number(httpProxy.port)
+                  }
+                : false
+        })
         this.api.interceptors.request.use((config) => {
             const method = config.method
             const url = config.url?.replace(/^\/|\/$/g, '') // url 首尾不能有 "/"
