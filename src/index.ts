@@ -158,13 +158,13 @@ async function main() {
 }
 
 process.on('uncaughtException', (err) => {
-    console.log('\n')
+    console.log()
     log.error(`${err.message}`)
     process.exit(0)
 })
 
 process.on('SIGINT', () => {
-    console.log('\n')
+    console.log()
     process.exit(0)
 })
 

@@ -19,7 +19,7 @@
     "test": "vitest",
     "pub": "pnpm build && npm publish",
     "check": "tsc --incremental --noEmit",
-    "lint": "eslint --cache --ext js,cjs,ts, --ignore-path .gitignore .",
+    "lint": "eslint --cache --ignore-path .gitignore .",
     "lint:fix": "eslint --cache --fix --ignore-path .gitignore .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

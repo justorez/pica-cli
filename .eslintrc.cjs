@@ -18,5 +18,12 @@ module.exports = {
         '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off'
     },
+    ignorePatterns: [
+        'dist',
+        'node_modules',
+        'tmp',
+        '*.d.ts',
+        '*.{md,json,yaml,yml,html}'
+    ],
     overrides: []
 }
