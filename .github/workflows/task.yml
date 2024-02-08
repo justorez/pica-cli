@@ -1,6 +1,6 @@
 name: task
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       PICA_DL_CONTENT:
@@ -14,6 +14,9 @@ on:
           - leaderboard
       PICA_DL_SEARCH_KEYWORDS:
         description: '搜索关键字或者漫画ID (多个用 # 隔开)'
+        type: string
+      PICA_DL_CHAPTER:
+        description: '指定下载章节 (示例：1,3,5-20)'
         type: string
       OUTPUT_ZIP:
         description: '每个章节打成独立压缩包'
@@ -38,6 +41,7 @@ env:
   PICA_DL_CONCURRENCY: ${{ inputs.PICA_DL_CONCURRENCY }}
   PICA_DL_CONTENT: ${{ inputs.PICA_DL_CONTENT }}
   PICA_DL_SEARCH_KEYWORDS: ${{ inputs.PICA_DL_SEARCH_KEYWORDS }}
+  PICA_DL_CHAPTER: ${{ inputs.PICA_DL_CHAPTER }}
 
 jobs:
   download:
@@ -56,7 +60,7 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
-      
+
       - name: Install deps and build
         run: |
           pnpm install
@@ -75,6 +79,6 @@ jobs:
           name: pica-comics
           path: ${{ inputs.OUTPUT_ZIP && 'comics-zip/' || 'comics/' }}
           retention-days: 7
-      
+
       - name: Upload to file.io
         run: node scripts/upload.js

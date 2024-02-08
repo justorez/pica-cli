@@ -1,6 +1,8 @@
 # pica-cli
 
-![NPM Version](https://img.shields.io/npm/v/pica-cli) [![publish](https://github.com/justorez/pica-cli/actions/workflows/publish.yml/badge.svg)](https://github.com/justorez/pica-cli/actions/workflows/publish.yml) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+![NPM Version](https://img.shields.io/npm/v/pica-cli)
+[![publish](https://github.com/justorez/pica-cli/actions/workflows/publish.yml/badge.svg)](https://github.com/justorez/pica-cli/actions/workflows/publish.yml)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 😉 哔咔漫画下载器
 
@@ -14,6 +16,7 @@
 - 如果没有相关环境变量，则启动交互命令界面；若有则直接执行
 - 通过 `pica-zip` 命令分章节批量压缩，配合支持 zip 的漫画阅读软件使用，比如 [Perfect Viewer](https://play.google.com/store/apps/details?id=com.rookiestudio.perfectviewer)。不限于 `pica-cli` 下载的漫画，只要符合 [cmoics/漫画标题/漫画章节/漫画图片](#) 的目录结构即可。
 - 借助 github action 实现飞速下载，支持从 github artifact 和 file.io 两种方式下载完整漫画包。file.io 无需注册，无需科学上网，文件保存两周，单文件最大 2GB，注意链接只能下载**一次**，下载后文件会自动删除
+- [更新日志](#更新日志)
 
 如果用的开心，求个 star 支持一下，比心 ~ ❤️
 
@@ -72,7 +75,7 @@ PICA_DL_CONCURRENCY=5
 # leaderboard | favorites | search
 # 下载内容，分别表示：排行榜 | 收藏夹 | 搜索
 PICA_DL_CONTENT=
-# 搜索关键字，多个用 # 隔开
+# 搜索关键字或漫画ID，多个用 # 隔开
 # 尽量输入完整漫画名，避免返回过多结果
 PICA_DL_SEARCH_KEYWORDS=
 ```
@@ -81,7 +84,7 @@ PICA_DL_SEARCH_KEYWORDS=
 # 运行
 pica-cli
 
-# 漫画下好后，生成 zip
+# 漫画打压缩包
 pica-zip
 ```
 
@@ -108,6 +111,7 @@ pnpm dev:zip
 
 ## 更新日志
 
+- 2024/02/08 支持下载指定章节
 - 2024/02/01 支持通过漫画ID精确下载
 - 2024/01/31 github action 同时将漫画包上传到 file.io
 - 2024/01/30 提供 github action 的下载方式

@@ -5,7 +5,8 @@ import {
     loadEnv,
     filterEpisodes,
     filterPictures,
-    isValidComicId
+    isValidComicId,
+    selectChapterByInput
 } from './utils'
 import ora from 'ora'
 import input from '@inquirer/input'
@@ -19,8 +20,21 @@ import pico from 'picocolors'
 loadEnv()
 
 async function main() {
-    const { PICA_DL_CONTENT, PICA_DL_CONCURRENCY, PICA_IS_GITHUB } = process.env
+    const {
+        PICA_DL_CONTENT,
+        PICA_DL_CHAPTER,
+        PICA_DL_CONCURRENCY,
+        PICA_IS_GITHUB
+    } = process.env
     const PICA_DL_SEARCH_KEYWORDS = process.env.PICA_DL_SEARCH_KEYWORDS?.trim()
+
+    const keysTip = [
+        `${pico.cyan('<space>')} 选中`,
+        `${pico.cyan('<a>')} 全选`,
+        `${pico.cyan('<i>')} 反选`,
+        `${pico.cyan('<enter>')} 确认`
+    ]
+    const checkboxHelpTip = ` (${keysTip.join(', ')})`
 
     const answer =
         PICA_DL_CONTENT ||
@@ -91,12 +105,17 @@ async function main() {
             searchRes = await pica.searchAll(keyword)
             spinner.stop()
 
+            if (searchRes.length === 0) {
+                continue
+            }
+
             const selected = PICA_DL_SEARCH_KEYWORDS
                 ? searchRes
                 : await checkbox({
                       message: '请选择要下载的漫画',
                       pageSize: 10,
                       loop: false,
+                      instructions: checkboxHelpTip,
                       choices: searchRes.map((x) => {
                           return {
                               name: x.title.trim(),
@@ -117,9 +136,27 @@ async function main() {
         episodes = filterEpisodes(episodes, cid)
         spinner.stop()
 
-        log.info(`${title} 查询到 ${episodes.length} 个章节`)
+        log.info(`${title} 查询到 ${episodes.length} 个未下载章节`)
 
-        for (const ep of episodes) {
+        if (episodes.length === 0) {
+            continue
+        }
+
+        const selectedEpisodes = PICA_DL_CHAPTER
+            ? selectChapterByInput(PICA_DL_CHAPTER, episodes)
+            : await checkbox({
+                  message: '请选择要下载的章节',
+                  pageSize: 10,
+                  instructions: checkboxHelpTip,
+                  choices: episodes.map((ep) => {
+                      return {
+                          name: ep.title.trim(),
+                          value: ep
+                      }
+                  })
+              })
+
+        for (const ep of selectedEpisodes) {
             spinner.start(`正在获取章节 ${ep.title} 的图片信息`)
             let pictures = await pica.picturesAll(cid, ep)
             pictures = filterPictures(pictures, title, ep.title)
@@ -137,19 +174,17 @@ async function main() {
             const concurrency = Number(PICA_DL_CONCURRENCY || 5)
             const limit = pLimit(concurrency)
             const tasks = pictures.map((pic) => {
-                return limit(() => {
-                    return pica
-                        .download(pic.url, {
-                            title: title,
-                            epTitle: pic.epTitle,
-                            picName: pic.name
-                        })
-                        .then(() => bar.tick())
+                return limit(async () => {
+                    await pica.download(pic.url, {
+                        title: title,
+                        epTitle: pic.epTitle,
+                        picName: pic.name
+                    })
+                    return bar.tick()
                 })
             })
 
             await Promise.all(tasks)
-
             mark(cid, ep.id)
         }
 
