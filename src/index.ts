@@ -144,17 +144,19 @@ async function main() {
 
         const selectedEpisodes = PICA_DL_CHAPTER
             ? selectChapterByInput(PICA_DL_CHAPTER, episodes)
-            : await checkbox({
-                  message: '请选择要下载的章节',
-                  pageSize: 10,
-                  instructions: checkboxHelpTip,
-                  choices: episodes.map((ep) => {
-                      return {
-                          name: ep.title.trim(),
-                          value: ep
-                      }
-                  })
-              })
+            : PICA_IS_GITHUB
+              ? episodes
+              : await checkbox({
+                    message: '请选择要下载的章节',
+                    pageSize: 10,
+                    instructions: checkboxHelpTip,
+                    choices: episodes.map((ep) => {
+                        return {
+                            name: ep.title.trim(),
+                            value: ep
+                        }
+                    })
+                })
 
         for (const ep of selectedEpisodes) {
             spinner.start(`正在获取章节 ${ep.title} 的图片信息`)

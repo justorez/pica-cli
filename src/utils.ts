@@ -12,6 +12,9 @@ export const debug = Debug('pica')
  * @param s 示例：1,3,5-20
  */
 export function selectChapterByInput(input: string, episodes: Episode[]) {
+    input = input.trim()
+    if (input === 'all') return episodes
+
     const idx = input.split(/[,，]/).reduce((pre: number[], cur: string) => {
         if (!cur) return pre
         if (cur.includes('-')) {
