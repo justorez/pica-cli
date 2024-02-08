@@ -51,7 +51,7 @@
   "homepage": "https://github.com/justorez/pica-cli",
   "repository": {
     "type": "git",
-    "url": "https://github.com/justorez/pica-cli.git"
+    "url": "git+https://github.com/justorez/pica-cli.git"
   },
   "bugs": {
     "url": "https://github.com/justorez/pica-cli/issues"
