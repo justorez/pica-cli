@@ -41,9 +41,9 @@ async function main() {
         (await select({
             message: '想下载哪些漫画？',
             choices: [
-                { name: '排行榜', value: 'leaderboard' },
+                { name: '去搜索', value: 'search' },
                 { name: '收藏夹', value: 'favorites' },
-                { name: '去搜索', value: 'search' }
+                { name: '排行榜', value: 'leaderboard' }
             ]
         }))
 
