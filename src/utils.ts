@@ -9,25 +9,34 @@ import figures from 'figures'
 export const debug = Debug('pica')
 
 /**
- * @param s 示例：1,3,5-20
+ * @param input 示例：all 或者 1,3,5-20
  */
 export function selectChapterByInput(input: string, episodes: Episode[]) {
     input = input.trim()
-    if (input === 'all') return episodes
 
-    const idx = input.split(/[,，]/).reduce((pre: number[], cur: string) => {
-        if (!cur) return pre
-        if (cur.includes('-')) {
-            const index = cur.split('-').map((s) => Number(s))
-            for (let i = index[0]; i <= index[1]; i++) {
-                pre.push(i)
+    if (input === 'all') {
+        return episodes
+    }
+
+    const idx = input
+        .split(/[,，]/)
+        .reduce((pre: number[], cur: string) => {
+            if (!cur) return pre
+            if (cur.includes('-')) {
+                const index = cur.split('-').map((s) => Number(s))
+                for (let i = index[0]; i <= index[1]; i++) {
+                    pre.push(i)
+                }
+            } else {
+                pre.push(Number(cur))
             }
-        } else {
-            pre.push(Number(cur))
-        }
-        return pre
-    }, [])
-    return episodes.filter((_, index) => idx.includes(index + 1))
+            return pre
+        }, [])
+        .filter((n) => Number.isInteger(n))
+
+    return idx.length !== 0
+        ? episodes.filter((_, index) => idx.includes(index + 1))
+        : episodes
 }
 
 export function isValidComicId(cid: string) {

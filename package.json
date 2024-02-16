@@ -23,7 +23,7 @@
     "lint:fix": "eslint --cache --fix --ignore-path .gitignore .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "commit": "pnpm cz"
+    "commit": "cz"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged",

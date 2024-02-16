@@ -24,7 +24,7 @@ async function main() {
         PICA_DL_CONTENT,
         PICA_DL_CHAPTER,
         PICA_DL_CONCURRENCY,
-        PICA_IS_GITHUB
+        PICA_IN_GITHUB
     } = process.env
     const PICA_DL_SEARCH_KEYWORDS = process.env.PICA_DL_SEARCH_KEYWORDS?.trim()
 
@@ -64,7 +64,7 @@ async function main() {
     }
 
     if (answer === 'search') {
-        if (PICA_IS_GITHUB && !PICA_DL_SEARCH_KEYWORDS) {
+        if (PICA_IN_GITHUB && !PICA_DL_SEARCH_KEYWORDS) {
             log.warn('没有输入搜索关键字')
             return
         }
@@ -144,7 +144,7 @@ async function main() {
 
         const selectedEpisodes = PICA_DL_CHAPTER
             ? selectChapterByInput(PICA_DL_CHAPTER, episodes)
-            : PICA_IS_GITHUB
+            : PICA_IN_GITHUB
               ? episodes
               : await checkbox({
                     message: '请选择要下载的章节',

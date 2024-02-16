@@ -16,7 +16,7 @@ on:
         description: '搜索关键字或者漫画ID (多个用 # 隔开)'
         type: string
       PICA_DL_CHAPTER:
-        description: '指定下载章节 (示例：1,3,5-20)'
+        description: '指定下载章节 (示例：all 或者 1,3,5-20)'
         type: string
         default: all
       OUTPUT_ZIP:
@@ -35,7 +35,7 @@ on:
 
 env:
   DEBUG: ${{ inputs.DEBUG && 'pica' }}
-  PICA_IS_GITHUB: true # 用于区分运行环境，不要修改
+  PICA_IN_GITHUB: true # 用于区分运行环境，不要修改
   PICA_SECRET_KEY: ${{ secrets.PICA_SECRET_KEY }}
   PICA_ACCOUNT: ${{ secrets.PICA_ACCOUNT }}
   PICA_PASSWORD: ${{ secrets.PICA_PASSWORD }}
