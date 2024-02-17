@@ -45,21 +45,3 @@ jobs:
       #   with:
       #     draft: true
       #     tag_name: ${{ env.version }}
-
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Install node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Release
-        run: npx changelogithub --draft # or changelogithub@0.12 if ensure the stable result
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
