@@ -23,6 +23,10 @@ on:
         description: '每个章节打成独立压缩包'
         type: boolean
         default: true
+      UPLOAD_FILEIO:
+        description: '上传到 file.io'
+        type: boolean
+        default: true
       PICA_DL_CONCURRENCY:
         description: '下载并发数'
         required: true
@@ -69,8 +73,8 @@ jobs:
       - name: Download
         run: pnpm start
 
-      - if: inputs.OUTPUT_ZIP
-        name: Compress
+      - name: Compress
+        if: inputs.OUTPUT_ZIP
         run: pnpm start:zip
 
       - name: Upload to github
@@ -81,4 +85,5 @@ jobs:
           retention-days: 7
 
       - name: Upload to file.io
+        if: inputs.UPLOAD_FILEIO
         run: node scripts/upload.js
