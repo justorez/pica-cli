@@ -16,5 +16,5 @@
       "src/*": ["./src/*"]
     }
   },
-  "include": ["src/*.ts", "scripts/upload.ts"]
+  "include": ["src/*.ts"]
 }
