@@ -9,9 +9,10 @@ import {
     selectChapterByInput
 } from './utils'
 import ora from 'ora'
-import input from '@inquirer/input'
-import select from '@inquirer/select'
-import checkbox from '@inquirer/checkbox'
+import Input from '@inquirer/input'
+import Password from '@inquirer/password'
+import Select from '@inquirer/select'
+import Checkbox from '@inquirer/checkbox'
 import ProgressBar from 'progress'
 import { Comic } from './types'
 import pLimit from 'p-limit'
@@ -19,8 +20,18 @@ import pico from 'picocolors'
 
 loadEnv()
 
+const keysTip = [
+    `${pico.cyan('<space>')} 选中`,
+    `${pico.cyan('<a>')} 全选`,
+    `${pico.cyan('<i>')} 反选`,
+    `${pico.cyan('<enter>')} 确认`
+]
+const checkboxHelpTip = ` (${keysTip.join(', ')})`
+
 async function main() {
     const {
+        PICA_ACCOUNT,
+        PICA_PASSWORD,
         PICA_DL_CONTENT,
         PICA_DL_CHAPTER,
         PICA_DL_CONCURRENCY,
@@ -28,17 +39,27 @@ async function main() {
     } = process.env
     const PICA_DL_SEARCH_KEYWORDS = process.env.PICA_DL_SEARCH_KEYWORDS?.trim()
 
-    const keysTip = [
-        `${pico.cyan('<space>')} 选中`,
-        `${pico.cyan('<a>')} 全选`,
-        `${pico.cyan('<i>')} 反选`,
-        `${pico.cyan('<enter>')} 确认`
-    ]
-    const checkboxHelpTip = ` (${keysTip.join(', ')})`
+    const account =
+        PICA_ACCOUNT ||
+        (await Input({
+            message: '请输入账户名称',
+            transformer: (val) => val.trim()
+        }))
+    const password =
+        PICA_PASSWORD ||
+        (await Password({
+            message: '请输入账户密码',
+            mask: true
+        }))
+
+    const spinner = ora('正在登录哔咔').start()
+    const pica = new Pica()
+    await pica.login(account, password)
+    spinner.stop()
 
     const answer =
         PICA_DL_CONTENT ||
-        (await select({
+        (await Select({
             message: '想下载哪些漫画？',
             choices: [
                 { name: '去搜索', value: 'search' },
@@ -46,11 +67,6 @@ async function main() {
                 { name: '排行榜', value: 'leaderboard' }
             ]
         }))
-
-    const spinner = ora('正在登录哔咔').start()
-    const pica = new Pica()
-    await pica.login()
-    spinner.stop()
 
     const comics: Comic[] = []
     if (answer === 'leaderboard') {
@@ -73,7 +89,7 @@ async function main() {
 
         const inputStr =
             PICA_DL_SEARCH_KEYWORDS ||
-            (await input({
+            (await Input({
                 message: '请输入关键字或者漫画ID (多个用 # 隔开)',
                 transformer: (val) => val.trim()
             }))
@@ -111,7 +127,7 @@ async function main() {
 
             const selected = PICA_DL_SEARCH_KEYWORDS
                 ? searchRes
-                : await checkbox({
+                : await Checkbox({
                       message: '请选择要下载的漫画',
                       pageSize: 10,
                       loop: false,
@@ -125,6 +141,11 @@ async function main() {
                   })
             comics.push(...selected)
         }
+    }
+
+    if (comics.length === 0) {
+        log.log('没有找到相应的漫画')
+        return
     }
 
     for (const comic of comics) {
@@ -146,7 +167,7 @@ async function main() {
             ? selectChapterByInput(PICA_DL_CHAPTER, episodes)
             : PICA_IN_GITHUB
               ? episodes
-              : await checkbox({
+              : await Checkbox({
                     message: '请选择要下载的章节',
                     pageSize: 10,
                     instructions: checkboxHelpTip,

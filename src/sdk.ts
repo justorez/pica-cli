@@ -14,6 +14,10 @@ import {
     Favorites
 } from './types'
 
+const PICA_SECRET_KEY =
+    process.env.PICA_SECRET_KEY ||
+    '~d}$Q7$eIni=V)9\\RK/P.RM4;9[7|@/CA}b~OW!3?EV`:<>M7pddUBL5n|0/*Cn'
+
 export class Pica {
     Order = {
         default: 'ua', // 默认
@@ -48,10 +52,7 @@ export class Pica {
             const timestamp = String(Date.now()).slice(0, -3)
             const raw =
                 url + timestamp + headers.nonce + method + headers['api-key']
-            const hmac = createHmac(
-                'sha256',
-                process.env.PICA_SECRET_KEY as string
-            )
+            const hmac = createHmac('sha256', PICA_SECRET_KEY)
             hmac.update(raw.toLowerCase())
             headers.signature = hmac.digest('hex')
             headers.time = timestamp
@@ -74,7 +75,7 @@ export class Pica {
                     return res
                 }
 
-                debug('%s %O', url, result)
+                debug('\n%s %O', url, result)
 
                 if (result.code != 200) {
                     throw new Error('请求失败')
@@ -93,16 +94,18 @@ export class Pica {
                     this.retryMap.delete(url)
                 }
 
-                debug('error %s %s %O', url, message, error.response?.data)
+                debug('\nerror %s %s %O', url, message, error.response?.data)
                 return Promise.reject(message)
             }
         )
     }
 
-    async login() {
+    async login(account: string, password: string) {
+        debug('\n%s %s', account, password)
+
         const res = await this.request<string>('post', 'auth/sign-in', {
-            email: process.env.PICA_ACCOUNT,
-            password: process.env.PICA_PASSWORD
+            email: account,
+            password: password
         }).catch((err) => {
             debug('\n登录异常 %s', err)
             throw new Error('登录失败，请检查账号/密码/网络环境')

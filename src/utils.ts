@@ -119,16 +119,15 @@ export function normalizeName(s: string) {
         .replace(/:/g, '-')
 }
 
-type LogMsg = string[] | number[]
 // √ ✕
 export const log = {
-    log: (...msg: LogMsg) => console.log(...msg),
-    info: (...msg: LogMsg) => console.log(pico.cyan('➡️'), ...msg),
-    warn: (...msg: LogMsg) =>
+    log: (...msg: unknown[]) => console.log(...msg),
+    info: (...msg: unknown[]) => console.log(pico.cyan('➡️'), ...msg),
+    warn: (...msg: unknown[]) =>
         console.log(pico.yellow(`${figures.warning} ${msg.join(' ')}`)),
-    error: (...msg: LogMsg) =>
+    error: (...msg: unknown[]) =>
         console.log(pico.red(`${figures.cross} ${msg.join(' ')}`)),
-    success: (...msg: LogMsg) =>
+    success: (...msg: unknown[]) =>
         console.log(pico.green(`${figures.tick} ${msg.join(' ')}`))
 }
 
