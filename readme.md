@@ -41,7 +41,7 @@ fork 一份[本仓库](https://github.com/justorez/pica-cli)，将上面两个�
 
 ![action run](https://s2.loli.net/2024/01/30/PmfublZKLFQrth9.png)
 
-等执行完之后，进入详情，在最下方有漫画的完整压缩包，下载即可。
+等执行完之后，进入详情，在最下方有漫画的完整压缩包，点击下载即可。
 
 ![artifact](https://s2.loli.net/2024/01/31/rIlTGfy8O5HiFcV.png)
 
