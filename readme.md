@@ -1,8 +1,9 @@
 # pica-cli
 
-[![NPM Version](https://img.shields.io/npm/v/pica-cli)](https://www.npmjs.com/package/pica-cli)
-[![publish](https://github.com/justorez/pica-cli/actions/workflows/publish.yml/badge.svg)](https://github.com/justorez/pica-cli/actions/workflows/publish.yml)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+[![NPM Version](https://img.shields.io/npm/v/pica-cli?style=flat-square)](https://www.npmjs.com/package/pica-cli)
+[![publish](https://img.shields.io/github/actions/workflow/status/justorez/pica-cli/publish.yml?style=flat-square&logo=github&label=publish
+)](https://github.com/justorez/pica-cli/actions/workflows/publish.yml)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
 
 😉 哔咔漫画下载器
 
