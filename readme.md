@@ -34,7 +34,7 @@ PICA_ACCOUNT
 PICA_PASSWORD
 ```
 
-fork 一份[本仓库](https://github.com/justorez/pica-cli)，将上面两个环境变量，设置为仓库密钥：
+Fork 一份[本仓库](https://github.com/justorez/pica-cli)，将上面两个环境变量，设置为仓库密钥：
 
 ![action secret](https://s2.loli.net/2024/01/30/5FxU7olyWC3VAe1.png)
 
@@ -51,6 +51,8 @@ fork 一份[本仓库](https://github.com/justorez/pica-cli)，将上面两个�
 ![file.io](https://s2.loli.net/2024/01/31/UT4i6zpGjYvDxL3.png)
 
 如果你想自定义过程，请自行修改 [.github/workflows/task.yml](.github/workflows/task.yml)。
+
+友情提示：`排行榜` 功能会下载大量漫画，Action 会运行很长时间或者直接任务失败，所以不推荐使用。
 
 ### 方式二：直接安装
 
