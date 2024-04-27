@@ -10,7 +10,6 @@
     "declaration": false,
     "resolveJsonModule": true,
     "sourceMap": false,
-    "types": ["node"],
     "paths": {
       "@/*": ["./src/*"],
       "src/*": ["./src/*"]
