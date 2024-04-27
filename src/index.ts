@@ -153,15 +153,21 @@ async function main() {
         const cid = comic._id
 
         spinner.start('正在获取章节信息')
-        let episodes = await pica.episodesAll(cid)
+        let episodes = await pica.episodesAll(cid).catch((error) => {
+            if (error === 400) {
+                spinner.stop()
+                log.error(`「${title}」无法访问，可能已被哔咔禁止`)
+            }
+            return []
+        })
         episodes = filterEpisodes(episodes, cid)
         spinner.stop()
-
-        log.info(`${title} 查询到 ${episodes.length} 个未下载章节`)
 
         if (episodes.length === 0) {
             continue
         }
+
+        log.info(`${title} 查询到 ${pico.cyan(episodes.length)} 个未下载章节`)
 
         const selectedEpisodes = PICA_DL_CHAPTER
             ? selectChapterByInput(PICA_DL_CHAPTER, episodes)
@@ -180,7 +186,7 @@ async function main() {
                 })
 
         for (const ep of selectedEpisodes) {
-            spinner.start(`正在获取章节 ${ep.title} 的图片信息`)
+            spinner.start(`正在获取章节 ${pico.cyan(ep.title)} 的图片信息`)
             let pictures = await pica.picturesAll(cid, ep)
             pictures = filterPictures(pictures, title, ep.title)
             spinner.stop()

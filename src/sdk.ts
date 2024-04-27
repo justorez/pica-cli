@@ -83,7 +83,13 @@ export class Pica {
                 return result.data
             },
             (error: AxiosError) => {
-                const { config, message } = error
+                const { config, message, response } = error
+
+                // 哔咔禁止访问的资源
+                if (response?.status === 400) {
+                    return Promise.reject(response?.status)
+                }
+
                 const url = config?.url || ''
 
                 const retryCount = this.retryMap.get(url) || 0
@@ -94,7 +100,7 @@ export class Pica {
                     this.retryMap.delete(url)
                 }
 
-                debug('\nerror %s %s %O', url, message, error.response?.data)
+                debug('\nerror %s %s %O', url, message, response?.data)
                 return Promise.reject(message)
             }
         )
@@ -256,7 +262,7 @@ export class Pica {
         return res.comics
     }
 
-    async searchAll(keyword: string) {
+    async searchAll(keyword: string): Promise<Comic[]> {
         const comics = []
         if (keyword) {
             const first = await this.search(keyword)
