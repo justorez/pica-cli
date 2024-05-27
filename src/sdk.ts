@@ -11,7 +11,7 @@ import {
     PagePicture,
     PageSearch,
     PageEpisode,
-    Favorites
+    PageFavorites
 } from './types'
 
 const PICA_SECRET_KEY =
@@ -262,8 +262,8 @@ export class Pica {
         return res.comics
     }
 
-    async searchAll(keyword: string): Promise<Comic[]> {
-        const comics = []
+    async searchAll(keyword: string) {
+        const comics: Comic[] = []
         if (keyword) {
             const first = await this.search(keyword)
             const pages = first.pages
@@ -292,10 +292,22 @@ export class Pica {
     /**
      * 获取收藏夹的内容
      */
-    async favorites() {
-        const url = 'users/favourite'
-        const res = await this.request<Favorites>('get', url)
-        return res.comics.docs
+    async favorites(page = 1, sort = this.Order.latest) {
+        const url = `users/favourite?page=${page}&s=${sort}`
+        const res = await this.request<PageFavorites>('get', url)
+        return res.comics
+    }
+
+    async favoritesAll() {
+        const comics: Comic[] = []
+        const first = await this.favorites()
+        const pages = first.pages
+        comics.push(...first.docs)
+        for (let page = 2; page <= pages; page++) {
+            const res = await this.favorites(page)
+            comics.push(...res.docs)
+        }
+        return comics
     }
 
     /**

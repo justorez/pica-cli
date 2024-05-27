@@ -75,7 +75,7 @@ async function main() {
     }
 
     if (answer === 'favorites') {
-        const res = await pica.favorites()
+        const res = await pica.favoritesAll()
         comics.push(...res)
     }
 
