@@ -58,7 +58,7 @@ async function main() {
                 log.warn(`${filename} 大小超过了 2GB`)
             }
         } catch (error) {
-            console.error(error)
+            log.error(`「${comic}」上传失败：`, error.message)
         }
     })
     return Promise.allSettled(task)

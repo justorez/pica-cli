@@ -186,7 +186,7 @@ async function main() {
                 })
 
         for (const ep of selectedEpisodes) {
-            spinner.start(`正在获取章节 ${pico.cyan(ep.title)} 的图片信息`)
+            spinner.start(`正在获取章节 ${pico.cyan(ep.title)} 的图片列表`)
             let pictures = await pica.picturesAll(cid, ep)
             pictures = filterPictures(pictures, title, ep.title)
             spinner.stop()
