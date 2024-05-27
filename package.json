@@ -1,7 +1,7 @@
 {
   "name": "pica-cli",
   "author": "justorez",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "😉 哔咔漫画下载器",
   "packageManager": "pnpm@9.0.0",
   "type": "module",
