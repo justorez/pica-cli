@@ -31,11 +31,11 @@ on:
         description: '上传到 file.io'
         type: boolean
         default: true
-      PICA_DL_CONCURRENCY:
-        description: '下载并发数'
-        required: true
-        type: number
-        default: 5
+      # PICA_DL_CONCURRENCY:
+      #   description: '下载并发数'
+      #   required: true
+      #   type: number
+      #   default: 5
       PICA_PRINT_FAVS:
         description: '打印收藏夹的全部内容'
         type: boolean
@@ -51,7 +51,7 @@ env:
   PICA_IN_GITHUB: true # 用于区分运行环境，不要修改
   PICA_ACCOUNT: ${{ secrets.PICA_ACCOUNT }}
   PICA_PASSWORD: ${{ secrets.PICA_PASSWORD }}
-  PICA_DL_CONCURRENCY: ${{ inputs.PICA_DL_CONCURRENCY }}
+  # PICA_DL_CONCURRENCY: ${{ inputs.PICA_DL_CONCURRENCY }}
   PICA_DL_CONTENT: ${{ inputs.PICA_DL_CONTENT }}
   PICA_DL_SEARCH_KEYWORDS: ${{ inputs.PICA_DL_SEARCH_KEYWORDS }}
   PICA_DL_CHAPTER: ${{ inputs.PICA_DL_CHAPTER }}
