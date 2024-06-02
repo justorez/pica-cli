@@ -23,7 +23,12 @@ describe('测试哔咔相关 API', () => {
         fs.writeFileSync(p('leaderboard.json'), JSON.stringify(res), 'utf8')
     })
 
-    it('获取收藏夹', async () => {
+    it('获取收藏夹的某一页', async () => {
+        const res = await pica.favorites()
+        fs.writeFileSync(p('favorites.json'), JSON.stringify(res), 'utf8')
+    })
+
+    it('获取收藏夹全部内容', async () => {
         const res = await pica.favoritesAll()
         fs.writeFileSync(p('favoritesAll.json'), JSON.stringify(res), 'utf8')
     })

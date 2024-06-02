@@ -65,3 +65,5 @@ export interface DInfo {
     epTitle: string // 章节标题
     picName: string // 图片文件名
 }
+
+export type ExpectedPage = number | string | undefined

@@ -9,12 +9,12 @@ import figures from 'figures'
 export const debug = Debug('pica')
 
 /**
- * @param input 示例：all 或者 1,3,5-20
+ * @param input `all` or `1,3,5-20`
  */
 export function selectChapterByInput(input: string, episodes: Episode[]) {
     input = input.trim()
 
-    if (input === 'all') {
+    if (['all', '全部', '所有'].includes(input)) {
         return episodes
     }
 

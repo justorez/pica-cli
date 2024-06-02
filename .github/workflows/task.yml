@@ -12,13 +12,17 @@ on:
           - search
           - favorites
           - leaderboard
+      PICA_DL_FAV_PAGE:
+        description: '指定下载收藏夹的第几页'
+        type: 'string'
+        default: '全部'
       PICA_DL_SEARCH_KEYWORDS:
         description: '搜索关键字或者漫画ID (多个用 # 隔开)'
         type: string
       PICA_DL_CHAPTER:
-        description: '指定下载章节 (示例：all 或者 1,3,5-20)'
+        description: '指定下载章节 (示例：1,3,5-20)'
         type: string
-        default: all
+        default: '全部'
       OUTPUT_ZIP:
         description: '每个章节打成独立压缩包'
         type: boolean
@@ -32,6 +36,10 @@ on:
         required: true
         type: number
         default: 5
+      PICA_PRINT_FAVS:
+        description: '打印收藏夹的全部内容'
+        type: boolean
+        default: false
       DEBUG:
         description: '调试模式'
         type: boolean
@@ -39,6 +47,7 @@ on:
 
 env:
   DEBUG: ${{ inputs.DEBUG && 'pica' }}
+  PICA_PRINT_FAVS: ${{ inputs.PICA_PRINT_FAVS && 'true' || '' }}
   PICA_IN_GITHUB: true # 用于区分运行环境，不要修改
   PICA_ACCOUNT: ${{ secrets.PICA_ACCOUNT }}
   PICA_PASSWORD: ${{ secrets.PICA_PASSWORD }}
@@ -46,6 +55,7 @@ env:
   PICA_DL_CONTENT: ${{ inputs.PICA_DL_CONTENT }}
   PICA_DL_SEARCH_KEYWORDS: ${{ inputs.PICA_DL_SEARCH_KEYWORDS }}
   PICA_DL_CHAPTER: ${{ inputs.PICA_DL_CHAPTER }}
+  PICA_DL_FAV_PAGE: ${{ inputs.PICA_DL_FAV_PAGE }}
 
 jobs:
   download:

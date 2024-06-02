@@ -11,7 +11,8 @@ import {
     PagePicture,
     PageSearch,
     PageEpisode,
-    PageFavorites
+    PageFavorites,
+    ExpectedPage
 } from './types'
 
 const PICA_SECRET_KEY =
@@ -298,7 +299,13 @@ export class Pica {
         return res.comics
     }
 
-    async favoritesAll() {
+    async favoritesAll(page: ExpectedPage = 'all') {
+        const pageNum = Number(page)
+        if (page && Number.isInteger(pageNum)) {
+            const res = await this.favorites(pageNum)
+            return { comics: res.docs, pages: res.pages }
+        }
+
         const comics: Comic[] = []
         const first = await this.favorites()
         const pages = first.pages
@@ -307,7 +314,7 @@ export class Pica {
             const res = await this.favorites(page)
             comics.push(...res.docs)
         }
-        return comics
+        return { comics, pages }
     }
 
     /**

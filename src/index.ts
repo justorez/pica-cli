@@ -17,6 +17,7 @@ import ProgressBar from 'progress'
 import { Comic } from './types'
 import pLimit from 'p-limit'
 import pico from 'picocolors'
+import Table from 'cli-table3'
 
 loadEnv()
 
@@ -34,7 +35,9 @@ async function main() {
         PICA_PASSWORD,
         PICA_DL_CONTENT,
         PICA_DL_CHAPTER,
+        PICA_DL_FAV_PAGE,
         PICA_DL_CONCURRENCY,
+        PICA_PRINT_FAVS,
         PICA_IN_GITHUB
     } = process.env
     const PICA_DL_SEARCH_KEYWORDS = process.env.PICA_DL_SEARCH_KEYWORDS?.trim()
@@ -75,8 +78,27 @@ async function main() {
     }
 
     if (answer === 'favorites') {
+        spinner.start('正在获取收藏夹信息')
+        const res = await pica.favoritesAll(PICA_DL_FAV_PAGE)
+        comics.push(...res.comics)
+        spinner.stop()
+
+        log.info(
+            `收藏夹共有 ${pico.cyan(res.pages)} 页${
+                PICA_DL_FAV_PAGE
+                    ? `, 第 ${pico.cyan(PICA_DL_FAV_PAGE)} 页等待下载`
+                    : ''
+            }`
+        )
+    }
+    if (PICA_PRINT_FAVS) {
         const res = await pica.favoritesAll()
-        comics.push(...res)
+        const table = new Table({
+            head: ['cid', 'title']
+        })
+        res.comics.forEach((item) => table.push([item._id, item.title]))
+        console.log('收藏夹全部漫画信息：')
+        console.log(table.toString())
     }
 
     if (answer === 'search') {
@@ -147,6 +169,8 @@ async function main() {
         log.log('没有找到相应的漫画')
         return
     }
+
+    log.info(`${pico.cyan(comics.length)} 部漫画等待下载`)
 
     for (const comic of comics) {
         const title = comic.title.trim()
