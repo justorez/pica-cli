@@ -28,13 +28,7 @@ export default defineConfig({
             platform: 'node',
             minify: true
         }),
-        nodeResolve({
-            preferBuiltins: false
-            // 为什么设置之后就报错？
-            // [!] (plugin commonjs--resolver)
-            // TypeError: The "path" argument must be of type string or an instance of URL. Received null
-            // exportConditions: ['node']
-        }),
+        nodeResolve(),
         commonjs(),
         visualizer()
     ]
