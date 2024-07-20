@@ -97,3 +97,4 @@ jobs:
       - name: Upload to file.io
         if: inputs.UPLOAD_FILEIO
         run: node scripts/upload.js
+        **
