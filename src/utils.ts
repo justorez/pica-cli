@@ -103,7 +103,9 @@ export function resolvePath(...args: string[]) {
 }
 
 /**
- * 将 Windows 文件和文件夹名称不允许的特殊字符替换为合法字符
+ * 将 Windows 文件和文件夹名称不允许的特殊字符替换为合法字符。
+ *
+ * 超长目录名会在 Linux 上创建失败，这里限制最长 85
  */
 export function normalizeName(s: string) {
     return s
@@ -117,6 +119,7 @@ export function normalizeName(s: string) {
         .replace(/</g, '＜')
         .replace(/>/g, '＞')
         .replace(/:/g, '-')
+        .slice(0, 85)
 }
 
 // √ ✕
