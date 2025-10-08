@@ -30,7 +30,7 @@ on:
       UPLOAD_FILEIO:
         description: '上传到 file.io'
         type: boolean
-        default: true
+        default: false
       # PICA_DL_CONCURRENCY:
       #   description: '下载并发数'
       #   required: true
