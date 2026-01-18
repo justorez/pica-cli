@@ -87,7 +87,7 @@
     "cz-conventional-changelog": "^3.3.0",
     "debug": "^4.3.4",
     "dotenv": "^16.4.1",
-    "esbuild": "^0.20.0",
+    "esbuild": "^0.25.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
