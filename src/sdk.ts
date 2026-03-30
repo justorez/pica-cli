@@ -42,14 +42,14 @@ export class Pica {
                 : false
         })
 
-        this.api.interceptors.request.use((config) => {
-            config.headers.set('Content-Type', 'application/json')
-            config.headers.set('Accept', 'application/json')
-            if (this.token) {
-                config.headers.set('Authorization', `Bearer ${this.token}`)
-            }
-            return config
-        })
+this.api.interceptors.request.use((config) => {
+    config.headers['Content-Type'] = 'application/json'
+    config.headers['Accept'] = 'application/json'
+    if (this.token) {
+        config.headers['Authorization'] = this.token
+    }
+    return config
+})
 
         this.api.interceptors.response.use(
             (res) => {
