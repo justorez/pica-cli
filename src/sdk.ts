@@ -90,14 +90,10 @@ export class Pica {
         )
     }
 
-    // ── 登录 ──────────────────────────────────────────────────
-    // POST /api/bff/users/login
-    // body: { username, password }
-    // response: { data: { accessToken } }
     async login(account: string, password: string) {
         debug('\n%s %s', account, password)
 
-        const res = await this.api.post('users/login', {
+        const res = await this.api.post('auth/login', {
             username: account,
             password: password
         }).catch((err) => {
@@ -113,8 +109,6 @@ export class Pica {
         this.token = token
     }
 
-    // ── 漫画详情 ──────────────────────────────────────────────
-    // GET /api/bff/comics/:id
     async comicInfo(bookId: string) {
         const res = await this.api.get(`comics/${bookId}`)
         const comic = res?.comic || res
@@ -126,8 +120,6 @@ export class Pica {
         } as Comic
     }
 
-    // ── 获取全部章节 ──────────────────────────────────────────
-    // GET /api/bff/comics/:id/episodes?page=1&pageSize=100
     async episodesAll(bookId: string) {
         const allEpisodes: any[] = []
         let page = 1
@@ -157,8 +149,6 @@ export class Pica {
         return allEpisodes.sort((a, b) => (a.order || 0) - (b.order || 0)) as Episode[]
     }
 
-    // ── 获取章节全部图片 ──────────────────────────────────────
-    // GET /api/bff/comic-pages?episodeId=:episodeId
     async picturesAll(bookId: string, ep: Episode) {
         const allPages: any[] = []
         let pageToken: string | null = null
@@ -187,8 +177,6 @@ export class Pica {
         })
     }
 
-    // ── 下载图片 ──────────────────────────────────────────────
-    // 使用独立 axios（不用 this.api）避免 baseURL 干扰完整 CDN URL
     async download(url: string, info: DInfo): Promise<void> {
         this.retryMap.set(url, this.maxRetry)
 
@@ -217,7 +205,6 @@ export class Pica {
         return fs.writeFile(file, res.data)
     }
 
-    // ── 搜索 ──────────────────────────────────────────────────
     async search(keyword: string, page = 1, sort = this.Order.loved) {
         const res = await this.api.get(
             `comics/search?keyword=${encodeURIComponent(keyword)}&page=${page}&sort=${sort}`
@@ -249,7 +236,6 @@ export class Pica {
         return comics
     }
 
-    // ── 收藏夹 ────────────────────────────────────────────────
     async favorites(page = 1, sort = this.Order.latest) {
         const res = await this.api.get(`users/favorites?page=${page}&sort=${sort}`)
         const docs: Comic[] = (res?.comics || res?.list || res?.docs || [])
@@ -282,7 +268,6 @@ export class Pica {
         return { comics, pages: first.pages }
     }
 
-    // ── 排行榜 ────────────────────────────────────────────────
     async leaderboard() {
         try {
             const res = await this.api.get('comics/leaderboard')
@@ -297,7 +282,6 @@ export class Pica {
         }
     }
 
-    // ── 其他（兼容 index.ts 调用） ────────────────────────────
     fav(bookId: string) {
         return this.api.post(`comics/${bookId}/favourite`).catch(() => null)
     }
