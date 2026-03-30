@@ -109,16 +109,16 @@ export class Pica {
         this.token = token
     }
 
-    async comicInfo(bookId: string) {
-        const res = await this.api.get(`comics/${bookId}`)
-        const comic = res?.comic || res
-        return {
-            _id: comic.id || comic._id || bookId,
-            title: (comic.title || comic.name || bookId).trim(),
-            author: comic.author || '',
-            ...comic
-        } as Comic
-    }
+async comicInfo(bookId: string) {
+    const res = await this.api.get(`comics/${bookId}`)
+    const comic = res?.comic || res
+    return {
+        ...comic,
+        _id: comic.id || comic._id || bookId,
+        title: (comic.title || comic.name || bookId).trim(),
+        author: (comic.authors || []).join(', ') || comic.author || '',
+    } as Comic
+}
 
     async episodesAll(bookId: string) {
         const allEpisodes: any[] = []
