@@ -131,9 +131,9 @@ async function main() {
                 info.title = info.title.trim()
                 comics.push(info)
                 log.info(`${info.title} 已加入下载队列`)
-            } catch (error) {
-                log.error(`无效漫画ID ${id}`)
-            }
+} catch (error) {
+    log.error(`无效漫画ID ${id}: ${error}`)
+}
         }
 
         // 根据关键字查询
