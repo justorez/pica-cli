@@ -90,26 +90,30 @@ this.api.interceptors.request.use((config) => {
         )
     }
 
-    async login(account: string, password: string) {
-        debug('\n%s %s', account, password)
+async login(account: string, password: string) {
+    debug('\n%s %s', account, password)
 
-        const res = await this.api.post('auth/login', {
-            username: account,
-            password: password
-        }).catch((err) => {
-            debug('\n登录异常 %s', err)
-            throw new Error('登录失败，请检查账号/密码/网络环境')
-        })
+    const res = await this.api.post('auth/login', {
+        username: account,
+        password: password
+    }).catch((err) => {
+        debug('\n登录异常 %s', err)
+        throw new Error('登录失败，请检查账号/密码/网络环境')
+    })
 
-        const token = res?.accessToken || res?.token
-        if (!token) {
-            debug('\n登录响应 %O', res)
-            throw new Error('登录失败，未获取到 token')
-        }
-        this.token = token
+    console.log('login res keys:', Object.keys(res || {}))
+    console.log('accessToken exists:', !!(res?.accessToken))
+
+    const token = res?.accessToken || res?.token
+    if (!token) {
+        throw new Error('登录失败，未获取到 token')
     }
+    this.token = token
+    console.log('token set, length:', token.length)
+}
 
 async comicInfo(bookId: string) {
+    console.log('comicInfo token:', this.token ? this.token.slice(0, 20) + '...' : 'EMPTY')
     const res = await this.api.get(`comics/${bookId}`)
     const comic = res?.comic || res
     return {
