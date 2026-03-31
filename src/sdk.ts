@@ -25,7 +25,7 @@ export class Pica {
     token: string | undefined
     maxRetry = 3
     retryMap = new Map<string, number>()
-
+cookie: string | undefined
     constructor() {
         const httpProxy = process.env.PICA_PROXY
             ? new URL(process.env.PICA_PROXY as string)
@@ -45,9 +45,12 @@ export class Pica {
 this.api.interceptors.request.use((config) => {
     config.headers['Content-Type'] = 'application/json'
     config.headers['Accept'] = 'application/json'
-if (this.token) {
-    config.headers['Authorization'] = `Bearer ${this.token}`
-}
+    if (this.token) {
+        config.headers['Authorization'] = `Bearer ${this.token}`
+    }
+    if (this.cookie) {
+        config.headers['Cookie'] = this.cookie
+    }
     return config
 })
 
@@ -93,23 +96,24 @@ if (this.token) {
 async login(account: string, password: string) {
     debug('\n%s %s', account, password)
 
-    const res = await this.api.post('auth/login', {
-        username: account,
-        password: password
-    }).catch((err) => {
-        debug('\n登录异常 %s', err)
-        throw new Error('登录失败，请检查账号/密码/网络环境')
-    })
+    const res = await axios.post(
+        'https://app.huakacomic.com/api/bff/auth/login',
+        { username: account, password: password },
+        { headers: { 'Content-Type': 'application/json' } }
+    )
 
-    console.log('login res keys:', Object.keys(res || {}))
-    console.log('accessToken exists:', !!(res?.accessToken))
+    const cookies = res.headers['set-cookie']
+    if (cookies) {
+        this.cookie = cookies.map((c: string) => c.split(';')[0]).join('; ')
+    }
 
-    const token = res?.accessToken || res?.token
+    const token = res.data?.data?.accessToken || res.data?.accessToken
     if (!token) {
         throw new Error('登录失败，未获取到 token')
     }
     this.token = token
     console.log('token set, length:', token.length)
+    console.log('cookie set:', !!this.cookie)
 }
 
 async comicInfo(bookId: string) {
