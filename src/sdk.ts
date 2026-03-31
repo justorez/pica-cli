@@ -45,9 +45,9 @@ export class Pica {
 this.api.interceptors.request.use((config) => {
     config.headers['Content-Type'] = 'application/json'
     config.headers['Accept'] = 'application/json'
-    if (this.token) {
-        config.headers['Authorization'] = this.token
-    }
+if (this.token) {
+    config.headers['Authorization'] = `Bearer ${this.token}`
+}
     return config
 })
 
