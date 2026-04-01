@@ -133,9 +133,9 @@ async comicInfo(bookId: string) {
         let page = 1
 
         while (true) {
-            const res = await this.api.get(
-                `comics/${bookId}/episodes?page=${page}&pageSize=100`
-            )
+const res = await this.api.get(
+    `episodes?comicId=${bookId}&page=${page}&pageSize=100`
+)
             const eps: any[] = res?.episodes || res?.list || res?.docs || []
             if (eps.length === 0) break
 
