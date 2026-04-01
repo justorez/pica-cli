@@ -176,12 +176,13 @@ const res = await this.api.get(
                 try { return path.extname(new URL(page.mediaUrl).pathname) || '.webp' }
                 catch { return '.webp' }
             })()
-            return {
-                ...page,
-                url: page.mediaUrl,
-                epTitle: ep.title,
-                name: String(i + 1).padStart(len, '0') + ext
-            }
+const jpgUrl = page.mediaUrl.replace('_read.webp', '_read.jpg')
+return {
+    ...page,
+    url: jpgUrl,
+    epTitle: ep.title,
+    name: String(i + 1).padStart(len, '0') + '.jpg'
+}
         })
     }
 
